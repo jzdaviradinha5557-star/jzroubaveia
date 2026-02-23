@@ -4,8 +4,14 @@ local Window = Fluent:CreateWindow({
     Title = "nocry " .. Fluent.Version,
     SubTitle = "by menojz",
     TabWidth = 160,
-    Size = UDim2.fromOffset(480, 380),
+    Size = UDim2.fromOffset(480, 360),
     Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
     Theme = "Dark",
     MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
 })
+
+local Tabs = {
+    Combat = Window:AddTab({ Title = "Combat", Icon = "locate-fixed" }),
+    Esp = Window:AddTab({ Title = "Esp", Icon = "eye" }),
+    Movimento = Window:AddTab({ Title = "Movimento", Icon = "runner" })
+}
