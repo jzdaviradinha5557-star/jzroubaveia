@@ -13,5 +13,6 @@ local Window = Fluent:CreateWindow({
 local Tabs = {
     Combat = Window:AddTab({ Title = "Combat", Icon = "locate-fixed" }),
     Esp = Window:AddTab({ Title = "Esp", Icon = "eye" }),
-    Movimento = Window:AddTab({ Title = "Movimento", Icon = "runner" })
+    Movimento = Window:AddTab({ Title = "Movimento", Icon = "person-standing" }),
+    Arma = Window:AddTab({ Title = "Arma", Icon = "weapon" })
 }
